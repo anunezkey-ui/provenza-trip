@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Provenza Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
   --radius:20px;--radius-sm:12px;--radius-xs:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--p50);color:var(--ink);min-height:100vh;padding-bottom:80px}
+body{font-family:'Inter',sans-serif;background:var(--p50);color:var(--ink);min-height:100vh;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));-webkit-text-size-adjust:100%}
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;font-family:inherit}
 
@@ -219,7 +219,9 @@ button{cursor:pointer;font-family:inherit}
 
 /* BOTTOM NAV */
 .bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;height:68px;
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(68px + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
   background:var(--white);border-top:1px solid var(--line);
   display:flex;align-items:stretch;z-index:200;
   box-shadow:0 -4px 20px rgba(91,33,182,.08);
@@ -269,6 +271,85 @@ button{cursor:pointer;font-family:inherit}
   .filters-grid{grid-template-columns:1fr 1fr}
   .smart-grid{grid-template-columns:1fr}
   .app-body{padding:12px;gap:12px}
+}
+
+/* ── FILTROS TOGGLE ─────────────────────────────────────────────────────── */
+.filters-toggle{
+  display:none;width:100%;background:var(--p50);border:1.5px solid var(--p200);
+  border-radius:var(--radius-xs);padding:11px 14px;font-size:14px;font-weight:600;
+  color:var(--p700);text-align:left;cursor:pointer;margin-bottom:0;
+}
+/* ── MOBILE ─────────────────────────────────────────────────────────────── */
+@media(max-width:640px){
+  /* Filtros colapsables */
+  .filters-toggle{display:flex;align-items:center;justify-content:space-between}
+  .filters-grid{display:none!important;grid-template-columns:1fr 1fr!important;margin-top:10px}
+  .filters-grid.open{display:grid!important}
+  .filter-actions{margin-top:10px}
+
+  /* Hero compacto */
+  .hero{height:185px}
+  .hero h1{font-size:clamp(28px,8vw,44px);white-space:nowrap}
+  .hero-sub{font-size:12px}
+  .hero-line{margin:6px 0}
+  .hero-content{padding:18px 14px;max-width:54%}
+  .hero-photo{width:46%;max-width:none}
+
+  /* Info cards 2×2 compactas */
+  .info-cards{grid-template-columns:1fr 1fr!important;gap:8px!important;padding:10px 10px 0!important}
+  .info-card{padding:10px 10px 8px}
+  .info-card .ic-icon{font-size:16px;margin-bottom:5px}
+  .info-card .ic-main{font-size:12px}
+  .info-card .ic-sub{font-size:11px}
+  .info-card ul li{font-size:11px}
+  .info-card .ic-warn{display:none}
+
+  /* Propuestas */
+  .prop-card{min-width:160px;max-width:160px}
+  .prop-img,.prop-img-placeholder{height:110px}
+  .prop-body{padding:10px}
+  .prop-name{font-size:12px}
+
+  /* Resumen inteligente */
+  .smart-grid{grid-template-columns:1fr!important}
+  .smart-img{display:none}
+
+  /* Mapa */
+  #map{height:230px}
+
+  /* Timeline */
+  .tl-node{min-width:90px}
+  .tl-sub{font-size:9px}
+  .tl-label{font-size:10px}
+
+  /* Day chips */
+  .day-chip{min-width:80px;padding:8px}
+  .day-chip .dc-date{font-size:12px}
+  .day-chip .dc-city{font-size:10px}
+  .day-chip .dc-count{font-size:9px}
+
+  /* Botón principal */
+  .btn-primary{font-size:14px;padding:13px 16px}
+
+  /* Secciones */
+  .app-body{padding:10px;gap:12px}
+  .sec-title{font-size:15px}
+  .filters-card{padding:14px}
+  .map-card{padding:12px}
+  .smart-card{padding:14px}
+
+  /* Header logo */
+  .header-logo{font-size:22px}
+  .app-header{padding:11px 14px}
+
+  /* Touch targets mínimos 44px */
+  .btn-primary,.btn-clear,.btn-detail,.er-fav,.nav-item{min-height:44px}
+  .field select,.field input{padding:10px;font-size:16px!important} /* 16px evita zoom en iOS */
+}
+@media(max-width:380px){
+  .hero h1{font-size:26px}
+  .info-cards{gap:6px!important}
+  .prop-card{min-width:148px;max-width:148px}
 }
 </style>
 </head>
@@ -347,7 +428,8 @@ button{cursor:pointer;font-family:inherit}
       <span class="sec-title"><span class="emoji">🔍</span> Filtros</span>
       <button class="btn-clear" id="resetBtn" type="button">↺ Limpiar filtros</button>
     </div>
-    <div class="filters-grid">
+    <button class="filters-toggle" id="filtersToggle" type="button">⚙️ Mostrar filtros <span id="toggleArrow">▼</span></button>
+    <div class="filters-grid" id="filtersGrid">
       <div class="field">
         <label for="dateFilter">Fecha</label>
         <select id="dateFilter"><option value="all">Todos</option></select>
@@ -733,6 +815,17 @@ function showView(v){
 
 document.querySelectorAll('select,input').forEach(el=>el.addEventListener('change',render));
 
+
+// Toggle filtros en móvil
+const filtersToggleBtn = document.getElementById('filtersToggle');
+const filtersGridEl = document.getElementById('filtersGrid');
+if(filtersToggleBtn && filtersGridEl){
+  filtersToggleBtn.addEventListener('click',()=>{
+    const open = filtersGridEl.classList.toggle('open');
+    document.getElementById('toggleArrow').textContent = open ? '▲' : '▼';
+    filtersToggleBtn.style.marginBottom = open ? '0' : '';
+  });
+}
 // ── INIT ─────────────────────────────────────────────────────────────────────
 renderTimeline();
 render();
