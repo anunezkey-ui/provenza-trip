@@ -559,9 +559,7 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <button class="menu-btn" aria-label="Abrir menú" onclick="document.getElementById('mobile-nav').scrollIntoView({behavior:'smooth'})">☰</button>
       <div class="brand-pill">Provenza Planner <small>Agosto 2026</small></div>
-      <div style="width:52px"></div>
     </div>
 
     <header class="hero">
@@ -571,9 +569,6 @@
             <h1 class="hero-title">Provenza Planner</h1>
             <p class="hero-sub">Del 19 al 28 de agosto 2026</p>
             <div class="hero-accent"></div>
-          </div>
-          <div class="footer-note" style="text-align:left; max-width: 60ch;">
-            Pensado para smartphone: botones grandes y bloques claros para usarlo en carretera.
           </div>
         </div>
         <div class="hero-photo">
@@ -860,21 +855,23 @@
 
     function activityCard(a) {
       const tagColor = colors[a.category] || '#5d2ea6';
+      const safeName = a.name.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       return `
-        <article class="proposal-card">
+        <article class="proposal-card" onclick="openDetail('${safeName}')" style="cursor:pointer;">
           <div class="proposal-img">
-            <div style="width:100%;height:100%;background: linear-gradient(135deg, rgba(93,46,166,.18), rgba(255,255,255,.03)), linear-gradient(90deg, rgba(0,0,0,.06), rgba(0,0,0,.20));"></div>
+            <div style="width:100%;height:100%;background: linear-gradient(135deg, ${tagColor}22, ${tagColor}44);"></div>
             <div class="tag" style="background:${tagColor}">${a.category}</div>
           </div>
           <div class="proposal-body">
             <div class="proposal-name">${a.name}</div>
             <div class="proposal-meta">
               <span>⏱ ${a.duration}</span>
-              <span>🚗 ${a.mins} min</span>
+              ${a.mins > 0 ? `<span>🚗 ${a.mins} min</span>` : '<span>📍 Base</span>'}
             </div>
             <div style="color:var(--muted);font-size:13px;line-height:1.45;">${a.note}</div>
             <div class="proposal-actions">
-              <button class="btn btn-secondary" onclick="focusOn('${a.name.replace(/'/g, "\'")}')">Ver en mapa</button>
+              <button class="btn btn-secondary" onclick="event.stopPropagation();focusOn('${safeName}')">📍 Ver en mapa</button>
+              <button class="btn btn-primary" onclick="event.stopPropagation();openDetail('${safeName}')">Ver detalle →</button>
             </div>
           </div>
         </article>
@@ -933,11 +930,34 @@
     function focusOn(name) {
       const a = activities.find(x => x.name === name);
       if (!a) return;
-      map.setView([a.lat, a.lng], 11, { animate: true });
-      markers.forEach(m => {
-        const ll = m.getLatLng();
-        if (ll.lat === a.lat && ll.lng === a.lng) m.openPopup();
-      });
+      document.getElementById('mapa').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        map.setView([a.lat, a.lng], 12, { animate: true });
+        markers.forEach(m => {
+          const ll = m.getLatLng();
+          if (Math.abs(ll.lat - a.lat) < 0.001 && Math.abs(ll.lng - a.lng) < 0.001) m.openPopup();
+        });
+      }, 400);
+    }
+
+    function openDetail(name) {
+      const a = activities.find(x => x.name === name);
+      if (!a) return;
+      const daypartLabel = { morning:'Mañana', midday:'Mediodía', afternoon:'Tarde', evening:'Noche', day:'Día completo', evening:'Noche' };
+      document.getElementById('modal-title').textContent = a.name;
+      document.getElementById('modal-body').innerHTML = `
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <span style="background:${colors[a.category]||'#5d2ea6'};color:#fff;padding:4px 10px;border-radius:20px;font-size:13px;font-weight:600;">${a.category}</span>
+          <span style="background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:20px;font-size:13px;">⏱ ${a.duration}</span>
+          ${a.mins > 0 ? `<span style="background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:20px;font-size:13px;">🚗 ${a.mins} min desde base</span>` : ''}
+          <span style="background:var(--surface);border:1px solid var(--line);padding:4px 10px;border-radius:20px;font-size:13px;">${daypartLabel[a.daypart]||a.daypart}</span>
+        </div>
+        <div style="font-size:15px;line-height:1.6;color:var(--ink);margin-bottom:14px;">${a.note}</div>
+        <div style="font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;">
+          📍 <strong>${a.city}</strong> · Base: ${a.base} · ${a.day}
+        </div>
+      `;
+      document.getElementById('detail-modal').style.display = 'flex';
     }
 
     function setDate(d) {
@@ -989,6 +1009,26 @@
     document.getElementById('recommendDayBtn').addEventListener('click', recommend);
 
     render();
+  </script>
+
+  <!-- Modal detalle actividad -->
+  <div id="detail-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(30,10,60,.55);align-items:flex-end;justify-content:center;padding:0;">
+    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;padding:24px 20px 32px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 id="modal-title" style="font-size:18px;font-weight:700;color:var(--ink);margin:0;line-height:1.3;"></h3>
+        <button onclick="document.getElementById('detail-modal').style.display='none'" style="background:none;border:none;font-size:24px;color:var(--muted);cursor:pointer;padding:0 4px;line-height:1;">×</button>
+      </div>
+      <div id="modal-body"></div>
+      <div style="margin-top:16px;display:flex;gap:10px;">
+        <button class="btn btn-secondary" style="flex:1;" onclick="(function(){const t=document.getElementById('modal-title').textContent;document.getElementById('detail-modal').style.display='none';focusOn(t);})()">📍 Ver en mapa</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="document.getElementById('detail-modal').style.display='none'">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('detail-modal').addEventListener('click', function(e){
+      if (e.target === this) this.style.display = 'none';
+    });
   </script>
 </body>
 </html>
