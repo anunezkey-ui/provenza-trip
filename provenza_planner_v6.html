@@ -396,6 +396,19 @@
       overflow-x:auto;
       padding-bottom: 4px;
       scroll-snap-type:x proximity;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(93,46,166,.45) rgba(93,46,166,.08);
+    }
+    .days::-webkit-scrollbar {
+      height: 4px;
+    }
+    .days::-webkit-scrollbar-track {
+      background: rgba(93,46,166,.08);
+      border-radius: 99px;
+    }
+    .days::-webkit-scrollbar-thumb {
+      background: rgba(93,46,166,.45);
+      border-radius: 99px;
     }
     .day-chip {
       scroll-snap-align:start;
@@ -434,6 +447,19 @@
       margin-top: 8px;
       overflow-x:auto;
       padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(93,46,166,.45) rgba(93,46,166,.08);
+    }
+    .timeline::-webkit-scrollbar {
+      height: 4px;
+    }
+    .timeline::-webkit-scrollbar-track {
+      background: rgba(93,46,166,.08);
+      border-radius: 99px;
+    }
+    .timeline::-webkit-scrollbar-thumb {
+      background: rgba(93,46,166,.45);
+      border-radius: 99px;
     }
     .timeline::before {
       content:"";
