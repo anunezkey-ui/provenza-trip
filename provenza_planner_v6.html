@@ -844,6 +844,9 @@
     const defaultDate = (realToday >= tripStart && realToday <= tripEnd && dates.includes(realToday))
       ? realToday : '2026-08-19';
     dateFilter.value = defaultDate;
+    // selectedDate tracks the active day independently of the <select> options
+    // (days 22,24,26,27 have no activities so they're not select options)
+    let selectedDate = defaultDate;
     locationFilter.value = 'all';
     typeFilter.value = 'all';
     durationFilter.value = 'all';
@@ -935,7 +938,7 @@
       // day chips
       daysEl.innerHTML = tripDays.map(([d, label]) => {
         const count = activities.filter(a => a.date === d).length;
-        const cls = d === dateFilter.value ? 'day-chip active' : 'day-chip';
+        const cls = d === selectedDate ? 'day-chip active' : 'day-chip';
         return `<button class="${cls}" onclick="setDate('${d}')"><strong>${d.replace('2026-08-','')}</strong><small>${label}</small><small>${count} actividades</small></button>`;
       }).join('');
 
@@ -951,7 +954,7 @@
       const todayStep = getTripStep(realToday);
       timelineEl.innerHTML = timelineSteps.map(([d,lbl,txt]) => {
         const isToday = d === todayStep;
-        const isSelected = dateFilter.value === d || (dateFilter.value >= d && dateFilter.value < (tripStepDates[tripStepDates.indexOf(d)+1] || '9999'));
+        const isSelected = selectedDate === d || (selectedDate >= d && selectedDate < (tripStepDates[tripStepDates.indexOf(d)+1] || '9999'));
         const cls = isToday ? 'timeline-item active' : (isSelected ? 'timeline-item selected' : 'timeline-item');
         return `<div class="${cls}" onclick="setDate('${d}')" style="cursor:pointer;" title="Ir al ${lbl}">
           <div class="dot"></div>
@@ -1003,7 +1006,10 @@
     }
 
     function setDate(d) {
-      dateFilter.value = d;
+      selectedDate = d;
+      // Only set select value if d is a valid option (dates with activities)
+      if (dates.includes(d)) dateFilter.value = d;
+      else dateFilter.value = 'all'; // show all when day has no dedicated activities
       render();
       document.getElementById('propuestas').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -1036,7 +1042,7 @@
       focusOn(best.name);
     }
 
-    dateFilter.addEventListener('change', render);
+    dateFilter.addEventListener('change', () => { selectedDate = dateFilter.value; render(); });
     locationFilter.addEventListener('change', render);
     typeFilter.addEventListener('change', render);
     durationFilter.addEventListener('change', render);
