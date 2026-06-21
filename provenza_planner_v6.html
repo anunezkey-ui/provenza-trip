@@ -718,7 +718,8 @@
           <div id="summaryText" style="line-height:1.55; color: var(--ink);">
             Llegada a Marsella a las 15:00. Recogida del coche a las 15:30. Desplazamiento a Vians (aprox. 1 h 15 min). Ideal para una primera actividad ligera por la tarde y disfrutar de la cena en Vians.
           </div>
-          <div id="weatherCard" style="margin-top:14px;border-top:1px solid rgba(93,46,166,.08);padding-top:12px;display:none;"></div>
+          <div id="transferStrip" style="display:none;margin-top:12px;border-top:1px solid rgba(93,46,166,.08);padding-top:12px;"></div>
+      <div id="weatherCard" style="margin-top:14px;border-top:1px solid rgba(93,46,166,.08);padding-top:12px;display:none;"></div>
         </div>
         <div class="summary-card" id="day28Card" style="display:none;">
           <h4>⚠️ Checklist de salida – 28 de agosto</h4>
@@ -790,6 +791,13 @@
     const mapEl = document.getElementById('map');
 
     const durationOrder = { '1h':1, '2h':2, '3h':3, 'more':4 };
+
+    const transfers = {
+      '2026-08-21': { from: 'Vians', to: 'Aviñón', km: 130, time: '1h 30 min', orig: 'Vians,France', dest: 'Avignon,France' },
+      '2026-08-23': { from: 'Aviñón', to: 'Saint-Rémy', km: 25, time: '30 min', orig: 'Avignon,France', dest: 'Saint-Rémy-de-Provence,France' },
+      '2026-08-25': { from: 'Saint-Rémy', to: 'Marsella', km: 100, time: '1h 15 min', orig: 'Saint-Rémy-de-Provence,France', dest: 'Marseille,France' },
+      '2026-08-28': { from: 'Marsella', to: 'Aeropuerto MRS', km: 15, time: '20 min', orig: 'Marseille,France', dest: 'Marseille+Provence+Airport,France' },
+    };
     const dayLabel = {
       '2026-08-19':'19 ago · Llegada',
       '2026-08-20':'20 ago · Vians',
@@ -1021,6 +1029,25 @@
       // Mostrar checklist de salida solo el día 28
       const day28Card = document.getElementById('day28Card');
       if (day28Card) day28Card.style.display = today === '2026-08-28' ? 'block' : 'none';
+
+      // Franja de trayecto (días de cambio de pernocta)
+      const transferEl = document.getElementById('transferStrip');
+      if (transferEl) {
+        const tr = transfers[today];
+        if (tr) {
+          const mapsUrl = 'https://www.google.com/maps/dir/?api=1&origin=' + encodeURIComponent(tr.orig) + '&destination=' + encodeURIComponent(tr.dest) + '&travelmode=driving';
+          transferEl.style.display = 'block';
+          transferEl.innerHTML = '<a href="' + mapsUrl + '" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;background:rgba(93,46,166,.05);border-radius:10px;padding:10px 12px;">' +
+            '<span style="font-size:20px;">🚗</span>' +
+            '<span style="flex:1;font-size:13px;line-height:1.4;"><strong>' + tr.from + ' → ' + tr.to + '</strong><br><span style="color:var(--muted);">' + tr.km + ' km · ' + tr.time + '</span></span>' +
+            '<span style="font-size:12px;color:var(--brand);white-space:nowrap;font-weight:600;">Ver ruta →</span>' +
+            '</a>';
+        } else {
+          transferEl.style.display = 'none';
+          transferEl.innerHTML = '';
+        }
+      }
+
       updateWeather(today);
 
       // day chips
