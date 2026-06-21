@@ -564,6 +564,19 @@
         padding-bottom: 8px;
         scroll-snap-type:x mandatory;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(93,46,166,.45) rgba(93,46,166,.08);
+      }
+      .cards-strip::-webkit-scrollbar {
+        height: 4px;
+      }
+      .cards-strip::-webkit-scrollbar-track {
+        background: rgba(93,46,166,.08);
+        border-radius: 99px;
+      }
+      .cards-strip::-webkit-scrollbar-thumb {
+        background: rgba(93,46,166,.45);
+        border-radius: 99px;
       }
       .cards-strip > .proposal-card {
         flex:0 0 84vw;
