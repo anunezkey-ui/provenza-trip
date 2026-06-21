@@ -718,6 +718,7 @@
           <div id="summaryText" style="line-height:1.55; color: var(--ink);">
             Llegada a Marsella a las 15:00. Recogida del coche a las 15:30. Desplazamiento a Vians (aprox. 1 h 15 min). Ideal para una primera actividad ligera por la tarde y disfrutar de la cena en Vians.
           </div>
+          <div id="weatherCard" style="margin-top:14px;border-top:1px solid rgba(93,46,166,.08);padding-top:12px;display:none;"></div>
         </div>
         <div class="summary-card" id="day28Card" style="display:none;">
           <h4>⚠️ Checklist de salida – 28 de agosto</h4>
@@ -916,13 +917,99 @@
       `;
     }
 
+    // ── Weather ────────────────────────────────────────────────────────────────
+    const weatherCard = document.getElementById('weatherCard');
+    const weatherCache = {};
+    const dateCoords = {
+      '2026-08-19':{lat:43.82,lng:6.15,city:'Vians'},
+      '2026-08-20':{lat:43.82,lng:6.15,city:'Vians'},
+      '2026-08-21':{lat:43.95,lng:4.81,city:'Aviñón'},
+      '2026-08-22':{lat:43.95,lng:4.81,city:'Aviñón'},
+      '2026-08-23':{lat:43.79,lng:4.83,city:'Saint-Rémy'},
+      '2026-08-24':{lat:43.79,lng:4.83,city:'Saint-Rémy'},
+      '2026-08-25':{lat:43.30,lng:5.37,city:'Marsella'},
+      '2026-08-26':{lat:43.30,lng:5.37,city:'Marsella'},
+      '2026-08-27':{lat:43.30,lng:5.37,city:'Marsella'},
+      '2026-08-28':{lat:43.30,lng:5.37,city:'Marsella'},
+    };
+    // August historical averages per location (fallback when outside forecast window)
+    const climateAvg = {
+      'Vians':      {tmax:26,tmin:15,precip:12,wind:12,code:1},
+      'Aviñón':     {tmax:32,tmin:21,precip: 8,wind:20,code:1},
+      'Saint-Rémy': {tmax:31,tmin:20,precip: 8,wind:15,code:1},
+      'Marsella':   {tmax:29,tmin:22,precip: 6,wind:18,code:1},
+    };
+    const wmoInfo = {
+      0:{icon:'☀️',desc:'Despejado'}, 1:{icon:'🌤️',desc:'Mayormente despejado'},
+      2:{icon:'⛅',desc:'Parcialmente nublado'}, 3:{icon:'☁️',desc:'Nublado'},
+      45:{icon:'🌫️',desc:'Niebla'}, 48:{icon:'🌫️',desc:'Niebla'},
+      51:{icon:'🌦️',desc:'Llovizna'}, 53:{icon:'🌦️',desc:'Llovizna moderada'},
+      55:{icon:'🌧️',desc:'Llovizna intensa'}, 61:{icon:'🌧️',desc:'Lluvia ligera'},
+      63:{icon:'🌧️',desc:'Lluvia moderada'}, 65:{icon:'🌧️',desc:'Lluvia'},
+      80:{icon:'🌦️',desc:'Chubascos'}, 81:{icon:'🌦️',desc:'Chubascos moderados'},
+      82:{icon:'⛈️',desc:'Chubascos fuertes'}, 95:{icon:'⛈️',desc:'Tormenta'},
+      96:{icon:'⛈️',desc:'Tormenta con granizo'}, 99:{icon:'⛈️',desc:'Tormenta'},
+    };
+
+    function renderWeatherData(w, isFallback) {
+      const wmo = wmoInfo[w.code] || {icon:'🌤️',desc:'Soleado'};
+      const badge = isFallback
+        ? '<span style="font-size:11px;color:var(--muted);background:rgba(93,46,166,.07);padding:2px 8px;border-radius:99px;white-space:nowrap;">Media histórica agosto</span>'
+        : '<span style="font-size:11px;color:#2a7a3a;background:rgba(42,122,58,.09);padding:2px 8px;border-radius:99px;white-space:nowrap;">✓ Previsión real</span>';
+      weatherCard.style.display = 'block';
+      weatherCard.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:700;color:var(--brand);">🌡️ Tiempo previsto</span>
+          ${badge}
+        </div>
+        <div style="display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center;">
+          <div style="font-size:42px;line-height:1;text-align:center;">${wmo.icon}</div>
+          <div>
+            <div style="font-weight:700;font-size:15px;color:var(--ink);margin-bottom:4px;">${wmo.desc}</div>
+            <div style="font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px;">
+              <span>🌡️ <strong style="color:var(--ink);">${w.tmax}°C</strong> / ${w.tmin}°C</span>
+              <span>💧 ${w.precip}% lluvia</span>
+              <span>💨 ${w.wind} km/h</span>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    async function updateWeather(date) {
+      const coords = dateCoords[date];
+      if (!coords) { weatherCard.style.display = 'none'; return; }
+      weatherCard.style.display = 'block';
+      weatherCard.innerHTML = '<span style="color:var(--muted);font-size:13px;">⏳ Consultando tiempo...</span>';
+      const todayTs = new Date(); todayTs.setHours(0,0,0,0);
+      const targetTs = new Date(date + 'T00:00:00');
+      const daysAhead = Math.round((targetTs - todayTs) / 86400000);
+      if (daysAhead >= 0 && daysAhead <= 15) {
+        const cacheKey = date;
+        if (weatherCache[cacheKey]) { renderWeatherData(weatherCache[cacheKey], false); return; }
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max&timezone=Europe%2FParis&start_date=${date}&end_date=${date}`;
+          const resp = await fetch(url, {signal: AbortSignal.timeout(5000)});
+          const data = await resp.json();
+          const d = data.daily;
+          const w = {tmax:Math.round(d.temperature_2m_max[0]), tmin:Math.round(d.temperature_2m_min[0]),
+                     precip:d.precipitation_probability_max[0]||0, wind:Math.round(d.windspeed_10m_max[0]),
+                     code:d.weathercode[0]};
+          weatherCache[cacheKey] = w;
+          renderWeatherData(w, false);
+        } catch(e) { renderWeatherData({...climateAvg[coords.city]}, true); }
+      } else {
+        renderWeatherData({...climateAvg[coords.city]}, true);
+      }
+    }
+    // ── End Weather ─────────────────────────────────────────────────────────────
+
     function render() {
       const filtered = activities.filter(matches);
       const visible = filtered.slice(0, 4);
       proposalCards.innerHTML = visible.map(activityCard).join('') || `<div style="grid-column:1/-1;color:var(--muted);padding:16px;">No hay resultados con estos filtros. Prueba a ampliarlos.</div>`;
 
       // summary
-      const today = dateFilter.value === 'all' ? '2026-08-19' : dateFilter.value;
+      const today = (selectedDate && selectedDate !== 'all') ? selectedDate : (dateFilter.value === 'all' ? '2026-08-19' : dateFilter.value);
       const todayActs = activities.filter(a => a.date === today);
       const top = todayActs.find(a => a.priority) || todayActs[0];
       summaryTitle.textContent = today === '2026-08-28' ? 'Día 28 · Salida' : `Hoy es ${(dayLabel[today] || today).replace(' · Llegada','').replace(' · Salida','')}.`;
@@ -934,6 +1021,7 @@
       // Mostrar checklist de salida solo el día 28
       const day28Card = document.getElementById('day28Card');
       if (day28Card) day28Card.style.display = today === '2026-08-28' ? 'block' : 'none';
+      updateWeather(today);
 
       // day chips
       daysEl.innerHTML = tripDays.map(([d, label]) => {
