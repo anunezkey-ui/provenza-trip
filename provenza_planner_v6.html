@@ -355,7 +355,51 @@ button{cursor:pointer;font-family:inherit}
   .info-cards{gap:6px!important}
   .prop-card{min-width:148px;max-width:148px}
 }
+
+/* ── SMARTPHONE RESPONSIVE ≤520px ──────────────────────────────────── */
 @media(max-width:520px){
+  /* Sin overflow horizontal */
+  html,body{overflow-x:hidden;max-width:100vw}
+
+  /* Hero: ocultar panel lateral, texto a ancho completo */
+  .hero{height:170px}
+  .hero-photo{display:none}
+  .hero-content{position:absolute;max-width:100%;left:0;right:0;padding:20px 18px}
+  .hero h1{font-size:clamp(22px,7.5vw,34px);white-space:normal;line-height:1.05}
+  .hero-bg{opacity:.52}
+
+  /* Info cards 2 col ajustadas */
+  .info-cards{grid-template-columns:1fr 1fr!important;gap:8px!important;padding:10px 10px 0!important}
+  .info-card{padding:10px 10px 8px}
+
+  /* Mapa más alto en móvil */
+  #map{height:260px!important}
+
+  /* Day chips: scroll táctil cómodo */
+  .day-chip{min-width:74px;padding:9px 6px}
+
+  /* Propuestas */
+  .prop-card{min-width:152px;max-width:152px}
+
+  /* Encabezados de sección */
+  .sec-header{flex-wrap:wrap;gap:6px}
+
+  /* Smart grid siempre 1 col */
+  .smart-grid{grid-template-columns:1fr!important}
+
+  /* Timeline scroll más cómodo */
+  .tl-node{min-width:82px}
+
+  /* Botón buscar a ancho completo */
+  .btn-primary{border-radius:var(--radius-xs);font-size:14px}
+}
+@media(max-width:360px){
+  .hero h1{font-size:20px!important}
+  .info-cards{grid-template-columns:1fr!important;gap:6px!important}
+  .bottom-nav .nav-item{font-size:9px;padding:6px 2px}
+  .prop-card{min-width:140px;max-width:140px}
+}
+</style>
 </head>
 <body>
 
