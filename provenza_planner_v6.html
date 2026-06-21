@@ -842,12 +842,12 @@
     const tripStart = '2026-08-19', tripEnd = '2026-08-28';
 
     // Smart defaults — use real today if within trip, else first day
-    const defaultDate = (realToday >= tripStart && realToday <= tripEnd && dates.includes(realToday))
-      ? realToday : '2026-08-19';
-    dateFilter.value = defaultDate;
-    // selectedDate tracks the active day independently of the <select> options
-    // (days 22,24,26,27 have no activities so they're not select options)
-    let selectedDate = defaultDate;
+    // During trip: use real today. Before trip: 'all' for proposals (summary still shows day 19 info)
+    const inTrip = realToday >= tripStart && realToday <= tripEnd;
+    const defaultSelected = inTrip ? (dates.includes(realToday) ? realToday : '2026-08-19') : '2026-08-19';
+    dateFilter.value = dates.includes(defaultSelected) ? defaultSelected : 'all';
+    // selectedDate is the single source of truth for date filtering (decoupled from <select>)
+    let selectedDate = defaultSelected;
     locationFilter.value = 'all';
     typeFilter.value = 'all';
     durationFilter.value = 'all';
@@ -887,7 +887,7 @@
     });
 
     function matches(a) {
-      const d = dateFilter.value === 'all' || a.date === dateFilter.value;
+      const d = selectedDate === 'all' || a.date === selectedDate;
       const l = locationFilter.value === 'all' || a.city === locationFilter.value || a.base === locationFilter.value;
       const t = typeFilter.value === 'all' || a.category === typeFilter.value;
       const dur = durationFilter.value === 'all' || durationOrder[a.duration] >= durationOrder[durationFilter.value];
@@ -1137,7 +1137,8 @@
     daypartFilter.addEventListener('change', render);
 
     document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-      dateFilter.value = '2026-08-19';
+      selectedDate = '2026-08-19';
+      dateFilter.value = dates.includes('2026-08-19') ? '2026-08-19' : 'all';
       locationFilter.value = 'all';
       typeFilter.value = 'all';
       durationFilter.value = 'all';
