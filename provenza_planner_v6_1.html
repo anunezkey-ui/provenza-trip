@@ -79,7 +79,7 @@ button{cursor:pointer;font-family:inherit}
 }
 .info-card .ic-icon{font-size:20px;margin-bottom:8px}
 .info-card .ic-title{font-size:11px;font-weight:700;color:var(--p700);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
-.info-card .ic-main{font-size:clamp(13px, 0.5vw + 10px, 15px);font-weight:700;color:var(--ink);line-height:1.4}
+.info-card .ic-main{font-size:13px;font-weight:700;color:var(--ink);line-height:1.4}
 .info-card .ic-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}
 .info-card.highlight{background:linear-gradient(180deg,var(--p50),var(--white));border-color:var(--p200)}
 .info-card ul{list-style:none;margin-top:6px;display:grid;gap:3px}
@@ -93,7 +93,7 @@ button{cursor:pointer;font-family:inherit}
 
 /* SECTION TITLES */
 .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sec-title{font-size:clamp(17px, 0.9vw + 12px, 20px);font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px}
+.sec-title{font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px}
 .sec-title .emoji{font-size:18px}
 .sec-link{font-size:13px;font-weight:600;color:var(--p600);display:flex;align-items:center;gap:3px}
 
@@ -152,7 +152,7 @@ button{cursor:pointer;font-family:inherit}
 .badge-parada-urbana{background:#fef9c3;color:#854d0e}
 .badge-noche{background:#ccfbf1;color:#065f46}
 .badge-paseo,.badge-excursion{background:#fce7f3;color:#9d174d}
-.prop-name{font-size:clamp(13px, 0.5vw + 10px, 15px);font-weight:700;color:var(--ink);line-height:1.35;margin-bottom:8px}
+.prop-name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.35;margin-bottom:8px}
 .prop-meta{display:flex;flex-direction:column;gap:4px}
 .prop-meta span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
 .btn-detail{
@@ -162,19 +162,6 @@ button{cursor:pointer;font-family:inherit}
   transition:background .12s,color .12s;
 }
 .btn-detail:hover{background:var(--p600);color:var(--white);border-color:var(--p600)}
-
-/* RESUMEN INTELIGENTE */
-.smart-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-.smart-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.smart-col{background:var(--p50);border-radius:var(--radius-sm);padding:14px}
-.smart-col.day-out{background:#fff7ed;border:1px solid #fed7aa}
-.smart-col h4{font-size:clamp(13px, 0.5vw + 10px, 15px);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.smart-col ul{list-style:none;display:grid;gap:4px}
-.smart-col ul li{font-size:12px;color:var(--muted);line-height:1.4;display:flex;align-items:start;gap:6px}
-.smart-col ul li::before{content:"✓";color:var(--p600);font-weight:700;flex-shrink:0}
-.smart-col.day-out ul li::before{content:"•";color:#f97316}
-.smart-img{border-radius:var(--radius-sm);overflow:hidden;background:var(--p100)}
-.smart-img img{width:100%;height:100%;object-fit:cover;display:block}
 
 /* MAP */
 .map-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
@@ -251,7 +238,7 @@ button{cursor:pointer;font-family:inherit}
 .event-row.active{border-color:var(--p500);background:var(--p50)}
 .event-row.top{border-left:3px solid var(--p500)}
 .er-body{flex:1;min-width:0}
-.er-name{font-size:clamp(14px, 0.5vw + 11px, 16px);font-weight:700;line-height:1.3}
+.er-name{font-size:14px;font-weight:700;line-height:1.3}
 .er-meta{font-size:12px;color:var(--muted);margin-top:3px}
 .er-note{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
 .er-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -267,13 +254,11 @@ button{cursor:pointer;font-family:inherit}
 @media(max-width:700px){
   .info-cards{grid-template-columns:1fr 1fr}
   .filters-grid{grid-template-columns:1fr 1fr}
-  .smart-grid{grid-template-columns:1fr 1fr}
   .hero{height:220px}
 }
 @media(max-width:480px){
   .info-cards{grid-template-columns:1fr 1fr;gap:10px;padding:12px 12px 0}
   .filters-grid{grid-template-columns:1fr 1fr}
-  .smart-grid{grid-template-columns:1fr}
   .app-body{padding:12px;gap:12px}
 }
 
@@ -314,10 +299,6 @@ button{cursor:pointer;font-family:inherit}
   .prop-body{padding:10px}
   .prop-name{font-size:12px}
 
-  /* Resumen inteligente */
-  .smart-grid{grid-template-columns:1fr!important}
-  .smart-img{display:none}
-
   /* Mapa */
   #map{height:230px}
 
@@ -340,7 +321,6 @@ button{cursor:pointer;font-family:inherit}
   .sec-title{font-size:15px}
   .filters-card{padding:14px}
   .map-card{padding:12px}
-  .smart-card{padding:14px}
 
   /* Header logo */
   .header-logo{font-size:22px}
@@ -383,9 +363,6 @@ button{cursor:pointer;font-family:inherit}
 
   /* Encabezados de sección */
   .sec-header{flex-wrap:wrap;gap:6px}
-
-  /* Smart grid siempre 1 col */
-  .smart-grid{grid-template-columns:1fr!important}
 
   /* Timeline scroll más cómodo */
   .tl-node{min-width:82px}
@@ -535,39 +512,6 @@ button{cursor:pointer;font-family:inherit}
     <div class="list-view" id="listView" style="display:none;margin-top:14px"></div>
   </section>
 
-  <!-- RESUMEN INTELIGENTE -->
-  <section class="smart-card">
-    <div class="sec-header">
-      <span class="sec-title"><span class="emoji">💡</span> Resumen inteligente</span>
-    </div>
-    <div class="smart-grid">
-      <div class="smart-col" id="smartDay1">
-        <h4>🌟 Hoy es 19 de agosto.</h4>
-        <ul>
-          <li>Llegada a Marsella a las 15:00.</li>
-          <li>Recogida del coche a las 15:30.</li>
-          <li>Desplazamiento a Vians (aprox. 1h 15min).</li>
-        </ul>
-        <div style="font-size:12px;color:var(--muted);margin-top:10px;font-style:italic">Ideal para una primera actividad ligera por la tarde y disfrutar la cena en Vians.</div>
-      </div>
-      <div class="smart-col day-out" id="smartDayOut">
-        <h4>🔴 Día 28 (salida)</h4>
-        <ul>
-          <li>Devolver el coche antes de las 19:00</li>
-          <li>Llegar al aeropuerto a las 19:25</li>
-          <li>Presentarse en el control de seguridad 2 horas antes de la salida del vuelo (21:25)</li>
-          <li>Tiempo estimado desde Marsella al aeropuerto: 30 min</li>
-        </ul>
-      </div>
-      <div class="smart-img" id="smartImg">
-        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&fit=crop" alt="Provenza" style="height:100%;min-height:140px" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--p200),var(--p100))'">
-        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(59,7,100,.7));padding:14px 12px;border-radius:0 0 var(--radius-sm) var(--radius-sm)">
-          <button style="width:100%;background:var(--p600);color:white;border:none;border-radius:var(--radius-xs);padding:8px;font-size:12px;font-weight:700;cursor:pointer" id="todayRecBtn">Ver recomendación del día</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- MAPA -->
   <section class="map-card">
     <div class="sec-header">
@@ -606,8 +550,6 @@ button{cursor:pointer;font-family:inherit}
   <button class="nav-item active" onclick="showView('home')"><span class="nav-icon">🏠</span>Inicio</button>
   <button class="nav-item" onclick="showView('proposals')"><span class="nav-icon">⭐</span>Propuestas</button>
   <button class="nav-item" onclick="showView('map')"><span class="nav-icon">📍</span>Mapa</button>
-  <button class="nav-item" onclick="showView('mytrip')"><span class="nav-icon">📋</span>Mi viaje</button>
-  <button class="nav-item" onclick="showView('settings')"><span class="nav-icon">⚙️</span>Ajustes</button>
 </nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -759,7 +701,7 @@ function attachCardEvents(){
     btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;if(favs.has(id))favs.delete(id);else favs.add(id);localStorage.setItem(favKey,JSON.stringify([...favs]));render()});
   });
   document.querySelectorAll('.focusbtn').forEach(btn=>{
-    btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;const item=events.find(x=>x.id===id);if(!item)return;activeId=id;const m=markers.get(id);if(m){map.setView([item.lat,item.lng],11,{animate:true});m.openPopup()}render()});
+    btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;const item=events.find(x=>x.id===id);if(!item)return;activeId=id;const m=markers.get(id);if(m){map.setView([item.lat,item.lng],11,{animate:true});m.openPopup()}render();document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'})});
   });
 }
 
@@ -852,17 +794,21 @@ document.getElementById('seeAllBtn').addEventListener('click',(e)=>{
   e.preventDefault();showAll=!showAll;
   document.getElementById('seeAllBtn').textContent=showAll?'← Carrusel':'Ver todas →';render();
 });
-document.getElementById('todayRecBtn')?.addEventListener('click',()=>{
-  fDate.value='2026-08-19';fDay.value='all';render();
-  document.getElementById('proposalsScroll').scrollIntoView({behavior:'smooth'});
-});
 
 // ── BOTTOM NAV ────────────────────────────────────────────────────────────────
+function scrollToEl(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const headerH=document.querySelector('.app-header')?.offsetHeight||0;
+  const y=el.getBoundingClientRect().top+window.pageYOffset-headerH-12;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+}
 function showView(v){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  if(v==='map')document.getElementById('map').scrollIntoView({behavior:'smooth'});
-  if(v==='proposals')document.getElementById('proposalsScroll').scrollIntoView({behavior:'smooth'});
+  if(v==='home')window.scrollTo({top:0,behavior:'smooth'});
+  if(v==='map')scrollToEl('map');
+  if(v==='proposals')scrollToEl('proposalsScroll');
 }
 
 document.querySelectorAll('select,input').forEach(el=>el.addEventListener('change',render));
@@ -882,9 +828,6 @@ if(filtersToggleBtn && filtersGridEl){
 renderTimeline();
 render();
 
-// Fix smart-img positioning
-const si=document.getElementById('smartImg');
-if(si)si.style.position='relative';
 </script>
 </body>
 </html>
