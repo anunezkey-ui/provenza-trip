@@ -560,7 +560,7 @@ button{cursor:pointer;font-family:inherit}
         </ul>
       </div>
       <div class="smart-img" id="smartImg">
-        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80&fit=crop" alt="Provenza" style="height:100%;min-height:140px" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--p200),var(--p100))'">
+        <img src="https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80&fit=crop" alt="Provenza" style="height:100%;min-height:140px" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--p200),var(--p100))'">
         <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(59,7,100,.7));padding:14px 12px;border-radius:0 0 var(--radius-sm) var(--radius-sm)">
           <button style="width:100%;background:var(--p600);color:white;border:none;border-radius:var(--radius-xs);padding:8px;font-size:12px;font-weight:700;cursor:pointer" id="todayRecBtn">Ver recomendación del día</button>
         </div>
@@ -759,7 +759,7 @@ function attachCardEvents(){
     btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;if(favs.has(id))favs.delete(id);else favs.add(id);localStorage.setItem(favKey,JSON.stringify([...favs]));render()});
   });
   document.querySelectorAll('.focusbtn').forEach(btn=>{
-    btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;const item=events.find(x=>x.id===id);if(!item)return;activeId=id;const m=markers.get(id);if(m){map.setView([item.lat,item.lng],11,{animate:true});m.openPopup()}render()});
+    btn.addEventListener('click',ev=>{ev.stopPropagation();const id=btn.dataset.id;const item=events.find(x=>x.id===id);if(!item)return;activeId=id;const m=markers.get(id);if(m){map.setView([item.lat,item.lng],11,{animate:true});m.openPopup()}render();document.getElementById('map').scrollIntoView({behavior:'smooth',block:'center'})});
   });
 }
 
@@ -861,6 +861,7 @@ document.getElementById('todayRecBtn')?.addEventListener('click',()=>{
 function showView(v){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   event.currentTarget.classList.add('active');
+  if(v==='home')window.scrollTo({top:0,behavior:'smooth'});
   if(v==='map')document.getElementById('map').scrollIntoView({behavior:'smooth'});
   if(v==='proposals')document.getElementById('proposalsScroll').scrollIntoView({behavior:'smooth'});
 }
