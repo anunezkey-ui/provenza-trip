@@ -1246,11 +1246,22 @@
         <div style="font-size:15px;line-height:1.6;color:var(--ink);margin-bottom:14px;">${a.note}</div>
         <div style="font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
           <span>📍 <strong>${a.city}</strong> · Base: ${a.base} · ${a.day}</span>
-          <a href="${mapsUrl}" target="_blank" style="color:var(--brand);font-weight:600;font-size:13px;text-decoration:none;">Abrir en Maps →</a>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <a href="${mapsUrl}" target="_blank" style="color:var(--brand);font-weight:600;font-size:13px;text-decoration:none;">Abrir en Maps →</a>
+
+          </div>
         </div>
       `;
       document.getElementById('modal-detail-idx').value = idx;
       document.getElementById('detail-modal').style.display = 'flex';
+      // Wikipedia link
+      const wikiLink = document.getElementById('modal-wiki-link');
+      if (a.wikiPage) {
+        wikiLink.href = 'https://en.wikipedia.org/wiki/' + a.wikiPage;
+        wikiLink.style.display = '';
+      } else {
+        wikiLink.style.display = 'none';
+      }
     }
 
     function setDate(d) {
@@ -1322,6 +1333,7 @@
       <input type="hidden" id="modal-detail-idx" value="">
       <div style="margin-top:16px;display:flex;gap:10px;">
         <button class="btn btn-secondary" style="flex:1;" onclick="(function(){const idx=parseInt(document.getElementById('modal-detail-idx').value);document.getElementById('detail-modal').style.display='none';focusOnIdx(idx);})()">📍 Ver en mapa</button>
+        <a id="modal-wiki-link" href="#" target="_blank" class="btn btn-secondary" style="flex:1;display:none;text-align:center;">🔍 Wikipedia</a>
         <button class="btn btn-primary" style="flex:1;" onclick="document.getElementById('detail-modal').style.display='none'">Cerrar</button>
       </div>
     </div>
