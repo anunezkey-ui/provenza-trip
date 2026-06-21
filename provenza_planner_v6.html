@@ -163,19 +163,6 @@ button{cursor:pointer;font-family:inherit}
 }
 .btn-detail:hover{background:var(--p600);color:var(--white);border-color:var(--p600)}
 
-/* RESUMEN INTELIGENTE */
-.smart-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-.smart-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.smart-col{background:var(--p50);border-radius:var(--radius-sm);padding:14px}
-.smart-col.day-out{background:#fff7ed;border:1px solid #fed7aa}
-.smart-col h4{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.smart-col ul{list-style:none;display:grid;gap:4px}
-.smart-col ul li{font-size:12px;color:var(--muted);line-height:1.4;display:flex;align-items:start;gap:6px}
-.smart-col ul li::before{content:"✓";color:var(--p600);font-weight:700;flex-shrink:0}
-.smart-col.day-out ul li::before{content:"•";color:#f97316}
-.smart-img{border-radius:var(--radius-sm);overflow:hidden;background:var(--p100)}
-.smart-img img{width:100%;height:100%;object-fit:cover;display:block}
-
 /* MAP */
 .map-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
 #map{height:320px;border-radius:var(--radius-sm);overflow:hidden}
@@ -267,13 +254,11 @@ button{cursor:pointer;font-family:inherit}
 @media(max-width:700px){
   .info-cards{grid-template-columns:1fr 1fr}
   .filters-grid{grid-template-columns:1fr 1fr}
-  .smart-grid{grid-template-columns:1fr 1fr}
   .hero{height:220px}
 }
 @media(max-width:480px){
   .info-cards{grid-template-columns:1fr 1fr;gap:10px;padding:12px 12px 0}
   .filters-grid{grid-template-columns:1fr 1fr}
-  .smart-grid{grid-template-columns:1fr}
   .app-body{padding:12px;gap:12px}
 }
 
@@ -314,10 +299,6 @@ button{cursor:pointer;font-family:inherit}
   .prop-body{padding:10px}
   .prop-name{font-size:12px}
 
-  /* Resumen inteligente */
-  .smart-grid{grid-template-columns:1fr!important}
-  .smart-img{display:none}
-
   /* Mapa */
   #map{height:230px}
 
@@ -340,7 +321,6 @@ button{cursor:pointer;font-family:inherit}
   .sec-title{font-size:15px}
   .filters-card{padding:14px}
   .map-card{padding:12px}
-  .smart-card{padding:14px}
 
   /* Header logo */
   .header-logo{font-size:22px}
@@ -383,9 +363,6 @@ button{cursor:pointer;font-family:inherit}
 
   /* Encabezados de sección */
   .sec-header{flex-wrap:wrap;gap:6px}
-
-  /* Smart grid siempre 1 col */
-  .smart-grid{grid-template-columns:1fr!important}
 
   /* Timeline scroll más cómodo */
   .tl-node{min-width:82px}
@@ -533,39 +510,6 @@ button{cursor:pointer;font-family:inherit}
     </div>
     <!-- LIST VIEW (toggled) -->
     <div class="list-view" id="listView" style="display:none;margin-top:14px"></div>
-  </section>
-
-  <!-- RESUMEN INTELIGENTE -->
-  <section class="smart-card">
-    <div class="sec-header">
-      <span class="sec-title"><span class="emoji">💡</span> Resumen inteligente</span>
-    </div>
-    <div class="smart-grid">
-      <div class="smart-col" id="smartDay1">
-        <h4>🌟 Hoy es 19 de agosto.</h4>
-        <ul>
-          <li>Llegada a Marsella a las 15:00.</li>
-          <li>Recogida del coche a las 15:30.</li>
-          <li>Desplazamiento a Vians (aprox. 1h 15min).</li>
-        </ul>
-        <div style="font-size:12px;color:var(--muted);margin-top:10px;font-style:italic">Ideal para una primera actividad ligera por la tarde y disfrutar la cena en Vians.</div>
-      </div>
-      <div class="smart-col day-out" id="smartDayOut">
-        <h4>🔴 Día 28 (salida)</h4>
-        <ul>
-          <li>Devolver el coche antes de las 19:00</li>
-          <li>Llegar al aeropuerto a las 19:25</li>
-          <li>Presentarse en el control de seguridad 2 horas antes de la salida del vuelo (21:25)</li>
-          <li>Tiempo estimado desde Marsella al aeropuerto: 30 min</li>
-        </ul>
-      </div>
-      <div class="smart-img" id="smartImg">
-        <img src="https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80&fit=crop" alt="Provenza" style="height:100%;min-height:140px" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--p200),var(--p100))'">
-        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(59,7,100,.7));padding:14px 12px;border-radius:0 0 var(--radius-sm) var(--radius-sm)">
-          <button style="width:100%;background:var(--p600);color:white;border:none;border-radius:var(--radius-xs);padding:8px;font-size:12px;font-weight:700;cursor:pointer" id="todayRecBtn">Ver recomendación del día</button>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- MAPA -->
@@ -850,10 +794,6 @@ document.getElementById('seeAllBtn').addEventListener('click',(e)=>{
   e.preventDefault();showAll=!showAll;
   document.getElementById('seeAllBtn').textContent=showAll?'← Carrusel':'Ver todas →';render();
 });
-document.getElementById('todayRecBtn')?.addEventListener('click',()=>{
-  fDate.value='2026-08-19';fDay.value='all';render();
-  document.getElementById('proposalsScroll').scrollIntoView({behavior:'smooth'});
-});
 
 // ── BOTTOM NAV ────────────────────────────────────────────────────────────────
 function showView(v){
@@ -881,9 +821,6 @@ if(filtersToggleBtn && filtersGridEl){
 renderTimeline();
 render();
 
-// Fix smart-img positioning
-const si=document.getElementById('smartImg');
-if(si)si.style.position='relative';
 </script>
 </body>
 </html>
