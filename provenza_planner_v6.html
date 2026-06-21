@@ -300,17 +300,26 @@
       border:1px solid rgba(93,46,166,.12);
       background:#fff;
       box-shadow: 0 12px 24px rgba(27, 12, 47, .08);
-      min-height: 286px;
       display:flex; flex-direction:column;
     }
-    .proposal-img {
-      height: 132px;
-      background: linear-gradient(135deg, #d1d7df, #e8e2d7);
-      position:relative;
-      overflow:hidden;
+    .proposal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(93,46,166,.08);
     }
-    .proposal-img img {
-      width:100%; height:100%; object-fit:cover; display:block;
+    .proposal-header .tag {
+      position: static;
+      flex-shrink: 0;
+    }
+    .proposal-header-meta {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .tag {
       position:absolute; left:10px; bottom:10px;
@@ -329,7 +338,6 @@
       font-weight:800;
       font-size: 16px;
       line-height: 1.25;
-      min-height: 40px;
     }
     .proposal-meta {
       display:flex; gap: 14px; flex-wrap:wrap;
@@ -340,10 +348,14 @@
       display:flex; gap:10px;
     }
     .proposal-actions .btn {
-      width:100%;
+      flex: 1;
+      min-width: 0;
       padding: 10px 12px;
       border-radius: 12px;
       font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .summary-box {
@@ -549,7 +561,6 @@
         scroll-snap-align:start;
       }
       .proposal-row { display:block; }
-      .proposal-img { height: 118px; }
       .proposal-body { padding: 11px; }
       .proposal-name { font-size: 15px; min-height: 0; }
       .proposal-actions .btn { min-height: 46px; }
@@ -861,21 +872,18 @@
     function activityCard(a) {
       const tagColor = colors[a.category] || '#5d2ea6';
       const idx = activities.indexOf(a);
+      const distInfo = a.mins > 0 ? `🚗 ${a.mins} min` : '📍 base';
       return `
         <article class="proposal-card" onclick="openDetail(${idx})" style="cursor:pointer;">
-          <div class="proposal-img">
-            <div style="width:100%;height:100%;background: linear-gradient(135deg, ${tagColor}22, ${tagColor}44);"></div>
-            <div class="tag" style="background:${tagColor}">${a.category}</div>
+          <div class="proposal-header" style="background:linear-gradient(135deg,${tagColor}12,${tagColor}22);">
+            <span class="tag" style="background:${tagColor}">${a.category}</span>
+            <span class="proposal-header-meta">⏱ ${a.duration} · ${distInfo}</span>
           </div>
           <div class="proposal-body">
             <div class="proposal-name">${a.name}</div>
-            <div class="proposal-meta">
-              <span>⏱ ${a.duration}</span>
-              ${a.mins > 0 ? `<span>🚗 ${a.mins} min</span>` : '<span>📍 Base</span>'}
-            </div>
-            <div style="color:var(--muted);font-size:13px;line-height:1.45;">${a.note}</div>
+            <div style="color:var(--muted);font-size:13px;line-height:1.5;flex:1;">${a.note}</div>
             <div class="proposal-actions">
-              <button class="btn btn-secondary" onclick="event.stopPropagation();focusOnIdx(${idx})">📍 Ver en mapa</button>
+              <button class="btn btn-secondary" onclick="event.stopPropagation();focusOnIdx(${idx})">📍 Mapa</button>
               <button class="btn btn-primary" onclick="event.stopPropagation();openDetail(${idx})">Ver detalle →</button>
             </div>
           </div>
