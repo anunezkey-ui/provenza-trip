@@ -462,6 +462,15 @@
     .timeline-item.active .dot {
       background: var(--brand2);
       border-color: var(--brand2);
+      box-shadow: 0 0 0 6px rgba(204,154,60,.25);
+    }
+    .timeline-item.active strong { color: var(--brand2); }
+    .timeline-item.selected .dot {
+      background: var(--brand);
+      border-color: var(--brand);
+    }
+    .timeline-item:hover .dot {
+      box-shadow: 0 0 0 6px rgba(93,46,166,.15);
     }
     .timeline-item strong { color: var(--brand); display:block; margin-bottom:6px; }
     .timeline-item small {
@@ -820,8 +829,21 @@
     fillSelect(locationFilter, locations, v => v);
     fillSelect(typeFilter, ['all', ...new Set(activities.map(a => a.category))], v => v === 'all' ? 'Todos' : v);
 
-    // Smart defaults
-    dateFilter.value = '2026-08-19';
+    // Real today (for timeline auto-highlight)
+    const realToday = new Date().toISOString().slice(0,10);
+    const tripStepDates = ['2026-08-19','2026-08-20','2026-08-21','2026-08-23','2026-08-25','2026-08-28'];
+    function getTripStep(date) {
+      for (let i = tripStepDates.length - 1; i >= 0; i--) {
+        if (date >= tripStepDates[i]) return tripStepDates[i];
+      }
+      return null;
+    }
+    const tripStart = '2026-08-19', tripEnd = '2026-08-28';
+
+    // Smart defaults — use real today if within trip, else first day
+    const defaultDate = (realToday >= tripStart && realToday <= tripEnd && dates.includes(realToday))
+      ? realToday : '2026-08-19';
+    dateFilter.value = defaultDate;
     locationFilter.value = 'all';
     typeFilter.value = 'all';
     durationFilter.value = 'all';
@@ -926,13 +948,17 @@
         ['2026-08-25','25–27 ago','Marsella'],
         ['2026-08-28','28 ago','Salida']
       ];
-      timelineEl.innerHTML = timelineSteps.map(([d,lbl,txt]) => `
-        <div class="timeline-item ${dateFilter.value===d ? 'active':''}">
+      const todayStep = getTripStep(realToday);
+      timelineEl.innerHTML = timelineSteps.map(([d,lbl,txt]) => {
+        const isToday = d === todayStep;
+        const isSelected = dateFilter.value === d || (dateFilter.value >= d && dateFilter.value < (tripStepDates[tripStepDates.indexOf(d)+1] || '9999'));
+        const cls = isToday ? 'timeline-item active' : (isSelected ? 'timeline-item selected' : 'timeline-item');
+        return `<div class="${cls}" onclick="setDate('${d}')" style="cursor:pointer;" title="Ir al ${lbl}">
           <div class="dot"></div>
           <strong>${lbl}</strong>
           <small>${txt}</small>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
 
       // map fit
       const shown = filtered.length ? filtered : activities;
