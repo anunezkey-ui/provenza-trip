@@ -1089,7 +1089,9 @@
       // Load images for visible cards
       proposalCards.querySelectorAll('.proposal-card[data-wiki]').forEach(card => {
         const wiki = card.getAttribute('data-wiki');
-        if (wiki) loadActivityImage(wiki, card);
+        const imgEl = card.querySelector(".card-img");
+        const alreadyHasPhoto = imgEl && imgEl.src && imgEl.src.startsWith("data:");
+        if (wiki && !alreadyHasPhoto) loadActivityImage(wiki, card);
       });
 
       // summary
