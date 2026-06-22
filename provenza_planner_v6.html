@@ -563,32 +563,30 @@
 
     /* ── Music player ──────────────────────────────────────────── */
     #music-player {
-      position: fixed;
-      bottom: 76px;
-      right: 14px;
-      z-index: 1100;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 7px;
-      background: rgba(93,46,166,.90);
+      background: rgba(93,46,166,.88);
       color: #fff;
       border-radius: 30px;
-      padding: 8px 13px 8px 9px;
+      padding: 8px 14px 8px 10px;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(93,46,166,.38);
+      box-shadow: 0 3px 14px rgba(93,46,166,.30);
       font-size: 12px;
       font-weight: 700;
       font-family: inherit;
       border: none;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       transition: transform .18s ease, box-shadow .18s ease;
       user-select: none;
       white-space: nowrap;
+      margin-top: 20px;
+      align-self: flex-start;
     }
-    #music-player:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(93,46,166,.48); }
+    #music-player:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(93,46,166,.44); }
     #music-player:active { transform: scale(.96); }
-    #music-disc { font-size:17px; display:inline-block; transition: transform .1s; }
+    #music-disc { font-size:17px; display:inline-block; }
     #music-player.playing #music-disc { animation: disc-spin 3s linear infinite; }
     @keyframes disc-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
     #music-toggle { font-size:13px; opacity:.9; }
@@ -703,6 +701,11 @@
             <p class="hero-sub">Del 19 al 28 de agosto 2026</p>
             <div class="hero-accent"></div>
           </div>
+          <button id="music-player" onclick="toggleMusic()" title="Paradis Bleu · Revers Gagnant (Alastair Lane Remix)">
+            <span id="music-disc">💿</span>
+            <span id="music-label">Paradis Bleu</span>
+            <span id="music-toggle">▶</span>
+          </button>
         </div>
         <div class="hero-photo">
           <div class="photo-card" style="transform:translateY(18px);">
@@ -890,12 +893,6 @@
     <div class="footer-note">HTML auto-contenido · Diseñado para smartphone · Listo para GitHub Pages</div>
   </div>
 
-  <!-- Music player flotante -->
-  <button id="music-player" onclick="toggleMusic()" title="Paradis Bleu · Revers Gagnant">
-    <span id="music-disc">💿</span>
-    <span id="music-label">Paradis Bleu</span>
-    <span id="music-toggle">▶</span>
-  </button>
   <div id="yt-container" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
     <div id="yt-player"></div>
   </div>
