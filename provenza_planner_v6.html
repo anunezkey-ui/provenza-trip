@@ -1222,16 +1222,33 @@
         if (wiki && !alreadyHasPhoto) loadActivityImage(wiki, card);
       });
 
-      // summary
-      const today = (selectedDate && selectedDate !== 'all') ? selectedDate : (dateFilter.value === 'all' ? '2026-08-19' : dateFilter.value);
+      // summary — ajustado a la fecha real del dispositivo
+      const _realNow   = new Date(); _realNow.setHours(0,0,0,0);
+      const _tripStart = new Date('2026-08-19T00:00:00');
+      const _tripEnd   = new Date('2026-08-28T00:00:00');
+      const _realStr   = _realNow.toISOString().slice(0,10);
+      const _noFilter  = !(selectedDate && selectedDate !== 'all') && dateFilter.value === 'all';
+      const today = (selectedDate && selectedDate !== 'all') ? selectedDate
+                  : (dateFilter.value !== 'all')              ? dateFilter.value
+                  : (_realNow >= _tripStart && _realNow <= _tripEnd) ? _realStr
+                  : '2026-08-19';
       const todayActs = activities.filter(a => a.date === today);
       const top = todayActs.find(a => a.priority) || todayActs[0];
-      summaryTitle.textContent = today === '2026-08-28' ? 'Día 28 · Salida' : `Hoy es ${(dayLabel[today] || today).replace(' · Llegada','').replace(' · Salida','')}.`;
-      summaryText.innerHTML = today === '2026-08-19'
-        ? `Llegada a Marsella a las 15:00. Recogida del coche a las 15:30. Desplazamiento a Viens (aprox. 1 h 30 min). Tarde tranquila: paseo por el pueblo y cena con los amigos.`
-        : today === '2026-08-28'
-          ? `Jornada de salida. Podéis hacer una actividad suave por la mañana antes de devolver el coche y coger el vuelo.`
-          : `Selecciona una propuesta y usa “Próxima parada recomendada” para una sugerencia contextual.`;
+      if (_noFilter && _realNow < _tripStart) {
+        const _daysLeft = Math.round((_tripStart - _realNow) / 86400000);
+        summaryTitle.textContent = `Faltan ${_daysLeft} días para la Provenza`;
+        summaryText.innerHTML = `El viaje arranca el 19 de agosto. Explora el mapa, las propuestas y los restaurantes mientras tanto.`;
+      } else if (_noFilter && _realNow > _tripEnd) {
+        summaryTitle.textContent = `La Provenza · ya visitada`;
+        summaryText.innerHTML = `El viaje terminó el 28 de agosto. ¡Esperamos que fuera increíble!`;
+      } else {
+        summaryTitle.textContent = today === '2026-08-28' ? 'Día 28 · Salida' : `Hoy es ${(dayLabel[today] || today).replace(' · Llegada','').replace(' · Salida','')}.`;
+        summaryText.innerHTML = today === '2026-08-19'
+          ? `Llegada a Marsella a las 15:00. Recogida del coche a las 15:30. Desplazamiento a Viens (aprox. 1 h 30 min). Tarde tranquila: paseo por el pueblo y cena con los amigos.`
+          : today === '2026-08-28'
+            ? `Jornada de salida. Podéis hacer una actividad suave por la mañana antes de devolver el coche y coger el vuelo.`
+            : `Selecciona una propuesta y usa “Próxima parada recomendada” para una sugerencia contextual.`;
+      }
       // Mostrar checklist de salida solo el día 28
       const day28Card = document.getElementById('day28Card');
       if (day28Card) day28Card.style.display = today === '2026-08-28' ? 'block' : 'none';
