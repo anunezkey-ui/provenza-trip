@@ -561,6 +561,38 @@
       touch-action: manipulation;
     }
 
+    /* ── Music player ──────────────────────────────────────────── */
+    #music-player {
+      position: fixed;
+      bottom: 76px;
+      right: 14px;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(93,46,166,.90);
+      color: #fff;
+      border-radius: 30px;
+      padding: 8px 13px 8px 9px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(93,46,166,.38);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      border: none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform .18s ease, box-shadow .18s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    #music-player:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(93,46,166,.48); }
+    #music-player:active { transform: scale(.96); }
+    #music-disc { font-size:17px; display:inline-block; transition: transform .1s; }
+    #music-player.playing #music-disc { animation: disc-spin 3s linear infinite; }
+    @keyframes disc-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    #music-toggle { font-size:13px; opacity:.9; }
+
     .footer-note {
       color: var(--muted);
       font-size: 12px;
@@ -856,6 +888,16 @@
     </section>
 
     <div class="footer-note">HTML auto-contenido · Diseñado para smartphone · Listo para GitHub Pages</div>
+  </div>
+
+  <!-- Music player flotante -->
+  <button id="music-player" onclick="toggleMusic()" title="Paradis Bleu · Revers Gagnant">
+    <span id="music-disc">💿</span>
+    <span id="music-label">Paradis Bleu</span>
+    <span id="music-toggle">▶</span>
+  </button>
+  <div id="yt-container" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
+    <div id="yt-player"></div>
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Navegación móvil">
@@ -1558,6 +1600,29 @@
     document.getElementById('detail-modal').addEventListener('click', function(e){
       if (e.target === this) this.style.display = 'none';
     });
+  </script>
+
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    var ytPlayer, musicPlaying = false;
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('yt-player', {
+        videoId: 'RYpHc9XI2RI',
+        playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
+        events: {
+          onStateChange: function(e) {
+            musicPlaying = e.data === YT.PlayerState.PLAYING;
+            document.getElementById('music-player').classList.toggle('playing', musicPlaying);
+            document.getElementById('music-toggle').textContent = musicPlaying ? '⏸' : '▶';
+          }
+        }
+      });
+    }
+    function toggleMusic() {
+      if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
+      musicPlaying ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+    }
   </script>
 </body>
 </html>
