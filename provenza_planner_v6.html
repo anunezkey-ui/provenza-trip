@@ -613,6 +613,26 @@
       .proposal-name { font-size: 15px; min-height: 0; }
       .proposal-actions .btn { min-height: 46px; }
       .summary-box { grid-template-columns: 1fr; }
+
+      /* ── RESTAURANTES ─────────────────────────────────────── */
+      .rest-alert { background:#fff8ed; border:1px solid #f6c26b; border-radius:12px; padding:10px 14px; font-size:12px; color:#92400e; line-height:1.5; margin-bottom:16px; }
+      .rest-stage { margin-bottom:22px; }
+      .rest-stage-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid var(--line); }
+      .rest-stage-label { font-size:12px; font-weight:800; color:var(--brand); text-transform:uppercase; letter-spacing:.07em; }
+      .rest-stage-dates { font-size:11px; color:var(--muted); font-weight:500; }
+      .restaurants-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+      .restaurant-card { background:#fff; border:1px solid rgba(93,46,166,.10); border-radius:16px; padding:14px; box-shadow:0 10px 22px rgba(47,16,96,.05); display:flex; flex-direction:column; gap:7px; }
+      .restaurant-kicker { font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-weight:700; }
+      .restaurant-card h4 { margin:0; font-size:15px; line-height:1.25; font-weight:700; }
+      .restaurant-card p { margin:0; color:var(--muted); line-height:1.5; font-size:12.5px; flex:1; }
+      .rest-badges { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+      .badge-price { font-size:11px; font-weight:800; color:var(--brand); background:rgba(93,46,166,.08); border-radius:6px; padding:2px 7px; }
+      .badge-type { font-size:11px; font-weight:600; color:var(--muted); background:var(--soft); border-radius:6px; padding:2px 7px; border:1px solid var(--line); }
+      .badge-reserva { font-size:10px; font-weight:700; background:#fff8ed; color:#b45309; border:1px solid #f6c26b; border-radius:6px; padding:2px 7px; }
+      .badge-reserva-alta { background:#fef2f2; color:#b91c1c; border-color:#fca5a5; }
+      .rest-links { display:flex; gap:7px; margin-top:2px; }
+      .rest-link { font-size:11.5px; font-weight:700; color:var(--brand); padding:5px 10px; background:rgba(93,46,166,.06); border-radius:8px; border:1px solid rgba(93,46,166,.12); white-space:nowrap; text-decoration:none; }
+      @media(max-width:520px){ .restaurants-grid { grid-template-columns:1fr !important; } }
     </style>
 </head>
 <body>
@@ -790,6 +810,211 @@
       <div id="map"></div>
     </section>
 
+    <section class="panel" id="restaurantes">
+      <div class="panel-head">
+        <div class="panel-title">🍽️ Restaurantes</div>
+        <span class="small-link">Por etapa</span>
+      </div>
+
+      <div class="rest-alert">
+        ⚠️ <strong>Agosto en Provenza:</strong> reserva con al menos 2–3 semanas de antelación, especialmente en Avignon y Marsella. Los restaurantes de alta cocina necesitan meses.
+      </div>
+
+      <!-- LUBERON 19-20 ago -->
+      <div class="rest-stage">
+        <div class="rest-stage-header">
+          <span class="rest-stage-label">🌿 Luberon · Viens</span>
+          <span class="rest-stage-dates">19–20 agosto</span>
+        </div>
+        <div class="restaurants-grid">
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Bonnieux · 25 min</div>
+            <h4>JU · Maison de cuisine</h4>
+            <p>Cocina honesta con producto local de primera. La opción gastronómica de referencia para la etapa del Luberon.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€</span>
+              <span class="badge-type">⭐ Gastronómico</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=JU%20Maison%20de%20cuisine%20Bonnieux" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/ju-maison-de-cuisine-bonnieux-r746876" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Saignon · 10 min</div>
+            <h4>Au Comptoir de Balthazar</h4>
+            <p>Cocina local auténtica llevada por una pareja. Ambiente íntimo, producto de temporada, muy valorado por los locales.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€</span>
+              <span class="badge-type">🍷 Bistró</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Au%20Comptoir%20de%20Balthazar%20Saignon" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurants/apt-c32600" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Goult · 20 min</div>
+            <h4>Le Carillon</h4>
+            <p>Familiar y de confianza. Terraza agradable, cocina provenzal clásica. Muy frecuentado por residentes del Luberon.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€</span>
+              <span class="badge-type">🥗 Provenzal</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Le%20Carillon%20Goult" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurants/gordes-c33043" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- AVIGNON 21-22 ago -->
+      <div class="rest-stage">
+        <div class="rest-stage-header">
+          <span class="rest-stage-label">🏛️ Avignon</span>
+          <span class="rest-stage-dates">21–22 agosto</span>
+        </div>
+        <div class="restaurants-grid">
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Centro histórico</div>
+            <h4>Christian Etienne</h4>
+            <p>El gran clásico de Avignon. Cocina provenzal de alta calidad en una mansión del s. XIV, junto al Palais des Papes.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€</span>
+              <span class="badge-type">⭐ Gastronómico</span>
+              <span class="badge-reserva badge-reserva-alta">Reservar semanas antes</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Christian%20Etienne%20Avignon" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/christian-etienne-r10924" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Place du Palais</div>
+            <h4>Le Moutardier du Pape</h4>
+            <p>Terraza con vistas directas al Palais des Papes. Cocina provenzal accesible en la mejor ubicación de la ciudad.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€</span>
+              <span class="badge-type">🍷 Terraza</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Le%20Moutardier%20du%20Pape%20Avignon" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/le-moutardier-du-pape-r8795" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Centro · Creativa</div>
+            <h4>Restaurant 46</h4>
+            <p>Carta moderna que cambia con la temporada. Producto local, cocina creativa, ambiente más relajado y contemporáneo.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€</span>
+              <span class="badge-type">🍴 Creativa</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Restaurant%2046%20Avignon" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurants/avignon-c32994" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- SAINT-RÉMY 23-24 ago -->
+      <div class="rest-stage">
+        <div class="rest-stage-header">
+          <span class="rest-stage-label">🌾 Saint-Rémy-de-Provence</span>
+          <span class="rest-stage-dates">23–24 agosto</span>
+        </div>
+        <div class="restaurants-grid">
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Saint-Rémy</div>
+            <h4>L'Auberge de Saint-Rémy</h4>
+            <p>La opción gastronómica sólida de la base. Para una cena más especial durante los dos días en los Alpilles.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€</span>
+              <span class="badge-type">⭐ Gastronómico</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Auberge%20de%20Saint-R%C3%A9my%20Saint-R%C3%A9my-de-Provence" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurants/saint-remy-de-provence-c32819" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- MARSELLA 25-27 ago -->
+      <div class="rest-stage">
+        <div class="rest-stage-header">
+          <span class="rest-stage-label">⚓ Marsella</span>
+          <span class="rest-stage-dates">25–27 agosto</span>
+        </div>
+        <div class="restaurants-grid">
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Vieux-Port</div>
+            <h4>Une Table, au Sud</h4>
+            <p>Elegante y muy bien situado. Para una cena especial con vistas al puerto antiguo de Marsella.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€</span>
+              <span class="badge-type">⭐ Gastronómico</span>
+              <span class="badge-reserva badge-reserva-alta">Reservar semanas antes</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Une%20Table%20au%20Sud%20Marseille" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/une-table-au-sud-r745" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Corniche · Junto al mar</div>
+            <h4>Le Petit Nice</h4>
+            <p>3 estrellas Michelin con vistas al Mediterráneo. La comida más ambiciosa del viaje si queréis una experiencia única.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€€</span>
+              <span class="badge-type">🌟 Alta cocina</span>
+              <span class="badge-reserva badge-reserva-alta">Reservar con meses</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Le%20Petit%20Nice%20Marseille" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/le-petit-nice-r766" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Marsella · Creativa</div>
+            <h4>AM par Alexandre Mazzia</h4>
+            <p>3 estrellas Michelin. Alta cocina de vanguardia para cerrar Marsella con el recuerdo gastronómico del viaje.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€€€</span>
+              <span class="badge-type">🌟 Alta cocina</span>
+              <span class="badge-reserva badge-reserva-alta">Reservar con meses</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=AM%20par%20Alexandre%20Mazzia%20Marseille" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurant/am-par-alexandre-mazzia-r713" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+          <article class="restaurant-card">
+            <div class="restaurant-kicker">Centro</div>
+            <h4>Ollā</h4>
+            <p>Plan más relajado y actual en el centro cultural de Marsella. Buena opción para una noche sin pretensiones.</p>
+            <div class="rest-badges">
+              <span class="badge-price">€€</span>
+              <span class="badge-type">🍴 Creativa</span>
+              <span class="badge-reserva">Reservar</span>
+            </div>
+            <div class="rest-links">
+              <a class="rest-link" href="https://www.google.com/maps/search/?api=1&query=Oll%C4%81%20Marseille" target="_blank" rel="noopener">Maps →</a>
+              <a class="rest-link" href="https://www.thefork.com/restaurants/marseille-c32641" target="_blank" rel="noopener">TheFork →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="panel" id="diario">
       <div class="panel-head">
         <div class="panel-title">📆 Resumen por día</div>
@@ -814,6 +1039,7 @@
       <a class="nav-link" href="#filtros"><span>⚙️</span><div>Filtros</div></a>
       <a class="nav-link" href="#propuestas"><span>⭐</span><div>Propuestas</div></a>
       <a class="nav-link" href="#mapa"><span>🗺️</span><div>Mapa</div></a>
+      <a class="nav-link" href="#restaurantes"><span>🍽️</span><div>Restaurantes</div></a>
       <a class="nav-link" href="#linea"><span>⏱️</span><div>Línea</div></a>
     </div>
   </nav>
