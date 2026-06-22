@@ -1273,8 +1273,7 @@
 
     function render() {
       const filtered = activities.filter(matches);
-      const visible = filtered.slice(0, 4);
-      proposalCards.innerHTML = visible.map(activityCard).join('') || `<div style="grid-column:1/-1;color:var(--muted);padding:16px;">No hay resultados con estos filtros. Prueba a ampliarlos.</div>`;
+      proposalCards.innerHTML = filtered.map(activityCard).join('') || `<div style="grid-column:1/-1;color:var(--muted);padding:16px;">No hay resultados con estos filtros. Prueba a ampliarlos.</div>`;
       // Load images for visible cards
       proposalCards.querySelectorAll('.proposal-card[data-wiki]').forEach(card => {
         const wiki = card.getAttribute('data-wiki');
