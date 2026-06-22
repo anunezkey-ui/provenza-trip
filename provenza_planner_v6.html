@@ -404,6 +404,10 @@
     .map-guide-loc { font-size:11px; color:var(--muted); font-weight:600; }
     .map-guide-links { display:flex; gap:5px; flex-wrap:wrap; margin-top:3px; }
     .map-guide-link { font-size:11px; font-weight:700; color:var(--brand); padding:3px 8px; background:rgba(93,46,166,.06); border-radius:6px; border:1px solid rgba(93,46,166,.12); white-space:nowrap; text-decoration:none; }
+    .map-stage-header { display:flex; align-items:center; gap:10px; padding:9px 14px; background:linear-gradient(135deg,rgba(93,46,166,.09),rgba(93,46,166,.04)); border-radius:10px; border-left:4px solid var(--brand); margin-top:10px; }
+    .map-stage-header:first-child { margin-top:0; }
+    .map-stage-label { font-size:13px; font-weight:800; color:var(--brand); letter-spacing:-.01em; }
+    .map-stage-dates { font-size:11px; color:var(--brand); font-weight:700; background:rgba(93,46,166,.11); padding:2px 8px; border-radius:20px; margin-left:auto; white-space:nowrap; }
     @media(max-width:520px) { .map-guide-grid { grid-template-columns:1fr; } .map-filter-bar { gap:5px; } .map-cat-btn { font-size:11px; padding:5px 10px; } }
 
     .days {
@@ -1564,20 +1568,41 @@
       mapFilterBar.appendChild(btn);
     });
 
+    // Etapas del viaje para agrupar el explorador
+    const stagesGuide = [
+      { key:'luberon',   label:'🌿 Luberon · Viens',        dates:'19–20 ago', actBases:['Viens'], restCities:['Bonnieux','Saignon','Goult'] },
+      { key:'avignon',   label:'🏛️ Avignon',                dates:'21–22 ago', actBases:['Aviñón'], restCities:['Avignon'] },
+      { key:'saintremy', label:'🌾 Saint-Rémy-de-Provence', dates:'23–24 ago', actBases:['Saint-Rémy'], restCities:['Saint-Rémy'] },
+      { key:'marsella',  label:'⚓ Marsella',                dates:'25–27 ago', actBases:['Marsella'], restCities:['Marsella'] },
+    ];
+
     function renderMapGuide(cat) {
       const def = mapCatDefs.find(d => d.cat === cat);
       mapGuideTitle.textContent = cat === 'all'
         ? 'Todos los puntos del viaje · ' + (activities.length + restaurants.length) + ' lugares'
         : def.emoji + ' ' + def.label;
 
-      let html = '';
       const isRest = cat === 'Restaurante';
       const showActs = cat === 'all' || !isRest;
       const showRests = cat === 'all' || isRest;
 
-      if (showActs) {
-        const list = cat === 'all' ? activities : activities.filter(a => a.category === cat);
-        list.forEach(a => {
+      const actList = showActs ? (cat === 'all' ? activities : activities.filter(a => a.category === cat)) : [];
+      const restList = showRests ? restaurants : [];
+
+      let html = '';
+
+      stagesGuide.forEach(stage => {
+        const stageActs = actList.filter(a => stage.actBases.includes(a.base));
+        const stageRests = restList.filter(r => stage.restCities.includes(r.city));
+        const total = stageActs.length + stageRests.length;
+        if (total === 0) return;
+
+        html += `<div class="map-stage-header" style="grid-column:1/-1;">
+          <span class="map-stage-label">${stage.label}</span>
+          <span class="map-stage-dates">${stage.dates}</span>
+        </div>`;
+
+        stageActs.forEach(a => {
           const c = colors[a.category] || '#5d2ea6';
           const mapsUrl = 'https://maps.google.com/?q=' + encodeURIComponent(a.name + ' ' + a.city);
           html += `<div class="map-guide-card">
@@ -1589,10 +1614,8 @@
             <div class="map-guide-links"><a class="map-guide-link" href="${mapsUrl}" target="_blank" rel="noopener">Maps →</a></div>
           </div>`;
         });
-      }
 
-      if (showRests) {
-        restaurants.forEach(r => {
+        stageRests.forEach(r => {
           const links = [];
           if (r.thefork) links.push(`<a class="map-guide-link" href="${r.thefork}" target="_blank" rel="noopener">TheFork →</a>`);
           if (r.web) links.push(`<a class="map-guide-link" href="${r.web}" target="_blank" rel="noopener">Web →</a>`);
@@ -1606,7 +1629,7 @@
             <div class="map-guide-links">${links.join('')}</div>
           </div>`;
         });
-      }
+      });
 
       mapGuideGrid.innerHTML = html || '<p style="color:var(--muted);font-size:13px;grid-column:1/-1;">No hay lugares en esta categoría.</p>';
     }
