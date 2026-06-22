@@ -948,11 +948,10 @@
     }
     const tripStart = '2026-08-19', tripEnd = '2026-08-28';
 
-    // Smart defaults — use real today if within trip, else first day
-    // During trip: use real today. Before trip: 'all' for proposals (summary still shows day 19 info)
+    // Smart defaults — durante el viaje usa la fecha real; antes/después sin filtro (resumen contextual)
     const inTrip = realToday >= tripStart && realToday <= tripEnd;
-    const defaultSelected = inTrip ? (dates.includes(realToday) ? realToday : '2026-08-19') : '2026-08-19';
-    dateFilter.value = dates.includes(defaultSelected) ? defaultSelected : 'all';
+    const defaultSelected = inTrip ? (dates.includes(realToday) ? realToday : '2026-08-19') : 'all';
+    dateFilter.value = defaultSelected;
     // selectedDate is the single source of truth for date filtering (decoupled from <select>)
     let selectedDate = defaultSelected;
     locationFilter.value = 'all';
@@ -1227,7 +1226,7 @@
       const _tripStart = new Date('2026-08-19T00:00:00');
       const _tripEnd   = new Date('2026-08-28T00:00:00');
       const _realStr   = _realNow.toISOString().slice(0,10);
-      const _noFilter  = !(selectedDate && selectedDate !== 'all') && dateFilter.value === 'all';
+      const _noFilter  = !selectedDate || selectedDate === 'all';
       const today = (selectedDate && selectedDate !== 'all') ? selectedDate
                   : (dateFilter.value !== 'all')              ? dateFilter.value
                   : (_realNow >= _tripStart && _realNow <= _tripEnd) ? _realStr
