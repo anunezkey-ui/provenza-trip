@@ -562,7 +562,7 @@
     }
 
     /* ── Music player ──────────────────────────────────────────── */
-    #music-player {
+    .music-btn {
       display: inline-flex;
       align-items: center;
       gap: 7px;
@@ -581,15 +581,14 @@
       transition: transform .18s ease, box-shadow .18s ease;
       user-select: none;
       white-space: nowrap;
-      margin-top: 8px;
-      align-self: flex-start;
     }
-    #music-player:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(93,46,166,.44); }
-    #music-player:active { transform: scale(.96); }
-    #music-disc { font-size:17px; display:inline-block; }
-    #music-player.playing #music-disc { animation: disc-spin 3s linear infinite; }
+    .music-btns { display:flex; flex-wrap:wrap; gap:8px; align-self:flex-start; margin-top:8px; }
+    .music-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(93,46,166,.44); }
+    .music-btn:active { transform: scale(.96); }
+    .music-disc { font-size:17px; display:inline-block; }
+    .music-btn.playing .music-disc { animation: disc-spin 3s linear infinite; }
     @keyframes disc-spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-    #music-toggle { font-size:13px; opacity:.9; }
+    .music-toggle { font-size:13px; opacity:.9; }
 
     .footer-note {
       color: var(--muted);
@@ -701,11 +700,18 @@
             <p class="hero-sub">Del 19 al 28 de agosto 2026</p>
             <div class="hero-accent"></div>
           </div>
-          <button id="music-player" onclick="toggleMusic()" title="Paradis Bleu · Revers Gagnant (Alastair Lane Remix)">
-            <span id="music-disc">💿</span>
-            <span id="music-label">Paradis Bleu</span>
-            <span id="music-toggle">▶</span>
-          </button>
+          <div class="music-btns">
+            <button id="music-player" class="music-btn" onclick="toggleMusic()" title="Paradis Bleu · Revers Gagnant (Alastair Lane Remix)">
+              <span id="music-disc" class="music-disc">💿</span>
+              <span id="music-label">Paradis Bleu</span>
+              <span id="music-toggle" class="music-toggle">▶</span>
+            </button>
+            <button id="music-player2" class="music-btn" onclick="toggleMusic2()" title="Femme du Crépuscule · LaBlue &amp; Astrønne">
+              <span id="music-disc2" class="music-disc">💿</span>
+              <span id="music-label2">Femme du Crépuscule</span>
+              <span id="music-toggle2" class="music-toggle">▶</span>
+            </button>
+          </div>
         </div>
         <div class="hero-photo">
           <div class="photo-card" style="transform:translateY(18px);">
@@ -901,6 +907,9 @@
 
   <div id="yt-container" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
     <div id="yt-player"></div>
+  </div>
+  <div id="yt-container2" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
+    <div id="yt-player2"></div>
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Navegación móvil">
@@ -1609,6 +1618,7 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     var ytPlayer, musicPlaying = false;
+    var ytPlayer2, musicPlaying2 = false;
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('yt-player', {
         videoId: 'RYpHc9XI2RI',
@@ -1621,10 +1631,27 @@
           }
         }
       });
+      ytPlayer2 = new YT.Player('yt-player2', {
+        videoId: '615uDQA04ZY',
+        playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
+        events: {
+          onStateChange: function(e) {
+            musicPlaying2 = e.data === YT.PlayerState.PLAYING;
+            document.getElementById('music-player2').classList.toggle('playing', musicPlaying2);
+            document.getElementById('music-toggle2').textContent = musicPlaying2 ? '⏸' : '▶';
+          }
+        }
+      });
     }
     function toggleMusic() {
       if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
-      musicPlaying ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+      if (musicPlaying) { ytPlayer.pauseVideo(); }
+      else { if (ytPlayer2 && musicPlaying2) ytPlayer2.pauseVideo(); ytPlayer.playVideo(); }
+    }
+    function toggleMusic2() {
+      if (!ytPlayer2 || typeof ytPlayer2.playVideo !== 'function') return;
+      if (musicPlaying2) { ytPlayer2.pauseVideo(); }
+      else { if (ytPlayer && musicPlaying) ytPlayer.pauseVideo(); ytPlayer2.playVideo(); }
     }
   </script>
 </body>
