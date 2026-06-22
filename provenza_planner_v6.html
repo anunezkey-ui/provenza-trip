@@ -1313,7 +1313,6 @@
 
     // ── MAP EXPLORER ────────────────────────────────────────────
     const mapCatDefs = [
-      { cat:'all',           emoji:'🗺️', label:'Todos',        color:'#5d2ea6' },
       { cat:'Pueblo',        emoji:'🏘️', label:'Pueblos',      color:colors['Pueblo'] },
       { cat:'Naturaleza',    emoji:'🌿', label:'Naturaleza',   color:colors['Naturaleza'] },
       { cat:'Cultura',       emoji:'🏛️', label:'Cultura',      color:colors['Cultura'] },
@@ -1329,10 +1328,7 @@
 
     mapCatDefs.forEach(def => {
       const btn = document.createElement('button');
-      btn.className = 'map-cat-btn' + (def.cat === 'all' ? ' active' : '');
-      if (def.cat === 'all') {
-        btn.style.cssText = `background:${def.color};color:#fff;border-color:transparent;`;
-      }
+      btn.className = 'map-cat-btn';
       btn.innerHTML = `${def.emoji}&nbsp;${def.label}`;
       btn.onclick = () => {
         mapFilterBar.querySelectorAll('.map-cat-btn').forEach(b => {
@@ -1348,19 +1344,15 @@
 
         // Mostrar/ocultar layer groups
         Object.entries(layerGroups).forEach(([c, group]) => {
-          if (def.cat === 'all' || c === def.cat) { group.addTo(map); }
+          if (c === def.cat) { group.addTo(map); }
           else { map.removeLayer(group); }
         });
 
         // Volar a los bounds de la categoría
-        if (def.cat !== 'all') {
-          const lays = [];
-          layerGroups[def.cat].eachLayer(l => lays.push(l));
-          if (lays.length) {
-            map.flyToBounds(L.featureGroup(lays).getBounds(), { padding:[50,50], maxZoom:13, duration:0.7 });
-          }
-        } else {
-          map.flyTo([43.6, 5.3], 8.3, { duration:0.7 });
+        const lays = [];
+        layerGroups[def.cat].eachLayer(l => lays.push(l));
+        if (lays.length) {
+          map.flyToBounds(L.featureGroup(lays).getBounds(), { padding:[50,50], maxZoom:13, duration:0.7 });
         }
 
         renderMapGuide(def.cat);
@@ -1434,7 +1426,9 @@
       mapGuideGrid.innerHTML = html || '<p style="color:var(--muted);font-size:13px;grid-column:1/-1;">No hay lugares en esta categoría.</p>';
     }
 
-    renderMapGuide('all');
+    // Guía vacía al cargar — el usuario elige la categoría
+    mapGuideTitle.textContent = '';
+    mapGuideGrid.innerHTML = '<p style="color:var(--muted);font-size:13px;grid-column:1/-1;text-align:center;padding:14px 0;">Selecciona una categoría para explorar los lugares del viaje</p>';
 
     function openDetail(idx) {
       const a = activities[idx];
