@@ -711,6 +711,11 @@
               <span id="music-label2">Femme du Crépuscule</span>
               <span id="music-toggle2" class="music-toggle">▶</span>
             </button>
+            <button id="music-player3" class="music-btn" onclick="toggleMusic3()" title="Club de Danse · Odetto">
+              <span id="music-disc3" class="music-disc">💿</span>
+              <span id="music-label3">Club de Danse</span>
+              <span id="music-toggle3" class="music-toggle">▶</span>
+            </button>
           </div>
         </div>
         <div class="hero-photo">
@@ -910,6 +915,9 @@
   </div>
   <div id="yt-container2" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
     <div id="yt-player2"></div>
+  </div>
+  <div id="yt-container3" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">
+    <div id="yt-player3"></div>
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Navegación móvil">
@@ -1619,39 +1627,52 @@
   <script>
     var ytPlayer, musicPlaying = false;
     var ytPlayer2, musicPlaying2 = false;
+    var ytPlayer3, musicPlaying3 = false;
+    function pauseAll() {
+      if (ytPlayer  && musicPlaying)  ytPlayer.pauseVideo();
+      if (ytPlayer2 && musicPlaying2) ytPlayer2.pauseVideo();
+      if (ytPlayer3 && musicPlaying3) ytPlayer3.pauseVideo();
+    }
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('yt-player', {
         videoId: 'RYpHc9XI2RI',
         playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
-        events: {
-          onStateChange: function(e) {
-            musicPlaying = e.data === YT.PlayerState.PLAYING;
-            document.getElementById('music-player').classList.toggle('playing', musicPlaying);
-            document.getElementById('music-toggle').textContent = musicPlaying ? '⏸' : '▶';
-          }
-        }
+        events: { onStateChange: function(e) {
+          musicPlaying = e.data === YT.PlayerState.PLAYING;
+          document.getElementById('music-player').classList.toggle('playing', musicPlaying);
+          document.getElementById('music-toggle').textContent = musicPlaying ? '⏸' : '▶';
+        }}
       });
       ytPlayer2 = new YT.Player('yt-player2', {
         videoId: '615uDQA04ZY',
         playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
-        events: {
-          onStateChange: function(e) {
-            musicPlaying2 = e.data === YT.PlayerState.PLAYING;
-            document.getElementById('music-player2').classList.toggle('playing', musicPlaying2);
-            document.getElementById('music-toggle2').textContent = musicPlaying2 ? '⏸' : '▶';
-          }
-        }
+        events: { onStateChange: function(e) {
+          musicPlaying2 = e.data === YT.PlayerState.PLAYING;
+          document.getElementById('music-player2').classList.toggle('playing', musicPlaying2);
+          document.getElementById('music-toggle2').textContent = musicPlaying2 ? '⏸' : '▶';
+        }}
+      });
+      ytPlayer3 = new YT.Player('yt-player3', {
+        videoId: 'lKZ3v_25w4M',
+        playerVars: { autoplay: 0, controls: 0, rel: 0, modestbranding: 1 },
+        events: { onStateChange: function(e) {
+          musicPlaying3 = e.data === YT.PlayerState.PLAYING;
+          document.getElementById('music-player3').classList.toggle('playing', musicPlaying3);
+          document.getElementById('music-toggle3').textContent = musicPlaying3 ? '⏸' : '▶';
+        }}
       });
     }
-    function toggleMusic() {
-      if (!ytPlayer || typeof ytPlayer.playVideo !== 'function') return;
-      if (musicPlaying) { ytPlayer.pauseVideo(); }
-      else { if (ytPlayer2 && musicPlaying2) ytPlayer2.pauseVideo(); ytPlayer.playVideo(); }
+    function toggleMusic()  {
+      if (!ytPlayer  || typeof ytPlayer.playVideo  !== 'function') return;
+      if (musicPlaying)  { ytPlayer.pauseVideo(); } else { pauseAll(); ytPlayer.playVideo(); }
     }
     function toggleMusic2() {
       if (!ytPlayer2 || typeof ytPlayer2.playVideo !== 'function') return;
-      if (musicPlaying2) { ytPlayer2.pauseVideo(); }
-      else { if (ytPlayer && musicPlaying) ytPlayer.pauseVideo(); ytPlayer2.playVideo(); }
+      if (musicPlaying2) { ytPlayer2.pauseVideo(); } else { pauseAll(); ytPlayer2.playVideo(); }
+    }
+    function toggleMusic3() {
+      if (!ytPlayer3 || typeof ytPlayer3.playVideo !== 'function') return;
+      if (musicPlaying3) { ytPlayer3.pauseVideo(); } else { pauseAll(); ytPlayer3.playVideo(); }
     }
   </script>
 </body>
