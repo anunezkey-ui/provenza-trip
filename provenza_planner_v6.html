@@ -389,6 +389,23 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.5);
     }
 
+    /* ── MAP EXPLORER ──────────────────────────────────────── */
+    .map-filter-bar { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px; }
+    .map-cat-btn { display:flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:6px 13px; border-radius:20px; border:2px solid rgba(0,0,0,.09); cursor:pointer; transition:all .18s ease; white-space:nowrap; background:rgba(255,255,255,.9); color:var(--ink); font-family:inherit; }
+    .map-cat-btn.active { color:#fff !important; border-color:transparent !important; box-shadow:0 3px 12px rgba(0,0,0,.18); transform:translateY(-1px); }
+    .map-guide { margin-top:18px; }
+    .map-guide-title { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin-bottom:12px; }
+    .map-guide-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    .map-guide-card { background:#fff; border:1px solid rgba(93,46,166,.10); border-radius:14px; padding:12px 13px; display:flex; flex-direction:column; gap:5px; }
+    .map-guide-card-top { display:flex; align-items:flex-start; gap:9px; }
+    .map-guide-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+    .map-guide-card h5 { margin:0; font-size:13px; font-weight:700; line-height:1.25; }
+    .map-guide-card p { margin:0; font-size:11.5px; color:var(--muted); line-height:1.45; flex:1; }
+    .map-guide-loc { font-size:11px; color:var(--muted); font-weight:600; }
+    .map-guide-links { display:flex; gap:5px; flex-wrap:wrap; margin-top:3px; }
+    .map-guide-link { font-size:11px; font-weight:700; color:var(--brand); padding:3px 8px; background:rgba(93,46,166,.06); border-radius:6px; border:1px solid rgba(93,46,166,.12); white-space:nowrap; text-decoration:none; }
+    @media(max-width:520px) { .map-guide-grid { grid-template-columns:1fr; } .map-filter-bar { gap:5px; } .map-cat-btn { font-size:11px; padding:5px 10px; } }
+
     .days {
       display:grid;
       grid-template-columns: repeat(10, minmax(86px, 1fr));
@@ -806,9 +823,14 @@
     <section class="panel" id="mapa">
       <div class="panel-head">
         <div class="panel-title">🗺️ Mapa</div>
-        <span class="small-link">Puntos del viaje</span>
+        <span class="small-link">Explorador por categoría</span>
       </div>
+      <div class="map-filter-bar" id="mapFilterBar"></div>
       <div id="map"></div>
+      <div class="map-guide" id="mapGuide">
+        <div class="map-guide-title" id="mapGuideTitle"></div>
+        <div class="map-guide-grid" id="mapGuideGrid"></div>
+      </div>
     </section>
 
     <section class="panel" id="restaurantes">
@@ -1147,25 +1169,54 @@
       'Naturaleza':'#ba7d2f',
       'Parada urbana':'#d07c2e',
       'Noche':'#6d3fa7',
-      'Paseo':'#5e6b76'
+      'Paseo':'#5e6b76',
+      'Restaurante':'#d4213b'
     };
 
+    const restaurants = [
+      { name:'JU · Maison de cuisine', city:'Bonnieux', loc:'Luberon · 25 min', note:'Cocina honesta con producto local. ⭐ Estrella Michelin (2025).', lat:43.8197, lng:5.3149, thefork:null, web:'https://ju-maisondecuisine.com/EN/', maps:'https://www.google.com/maps/search/?api=1&query=JU%20Maison%20de%20cuisine%20Bonnieux' },
+      { name:'Au Comptoir de Balthazar', city:'Saignon', loc:'Luberon · 10 min', note:'Cocina local auténtica, ambiente íntimo. Producto de temporada.', lat:43.8639, lng:5.4072, thefork:null, web:null, maps:'https://www.google.com/maps/search/?api=1&query=Au%20Comptoir%20de%20Balthazar%20Saignon' },
+      { name:'Le Carillon', city:'Goult', loc:'Luberon · 20 min', note:'Terraza agradable, cocina provenzal clásica. Muy frecuentado por locales.', lat:43.8485, lng:5.3600, thefork:null, web:'https://www.restaurant-goult.com/', maps:'https://www.google.com/maps/search/?api=1&query=Le%20Carillon%20Goult' },
+      { name:'Restaurant Sevin', city:'Avignon', loc:'Centro histórico · Palais des Papes', note:'Alta cocina provenzal en mansión del s. XIV junto al Palais des Papes.', lat:43.9508, lng:4.8059, thefork:'https://www.thefork.com/restaurant/restaurant-sevin-guilhem-sevin-r829557', web:null, maps:'https://www.google.com/maps/search/?api=1&query=Restaurant%20Sevin%20Guilhem%20Sevin%20Avignon' },
+      { name:'Le Moutardier du Pape', city:'Avignon', loc:'Place du Palais', note:'Terraza con vistas directas al Palais des Papes. Cocina provenzal accesible.', lat:43.9506, lng:4.8064, thefork:'https://www.thefork.com/restaurant/le-moutardier-du-pape-r9970', web:null, maps:'https://www.google.com/maps/search/?api=1&query=Le%20Moutardier%20du%20Pape%20Avignon' },
+      { name:'Restaurant 46', city:'Avignon', loc:'Centro · Creativa', note:'Carta moderna que cambia con la temporada. Cocina creativa y relajada.', lat:43.9490, lng:4.8073, thefork:null, web:null, maps:'https://www.google.com/maps/search/?api=1&query=Restaurant%2046%20Avignon' },
+      { name:"L'Auberge de Saint-Rémy", city:'Saint-Rémy', loc:'Alpilles', note:'⭐⭐ Dos estrellas Michelin. Fanny Rey y Jonathan Wahid.', lat:43.7892, lng:4.8343, thefork:'https://www.thefork.com/restaurant/l-auberge-de-saint-remy-la-table-gastronomique-de-fanny-rey-jonathan-wahid-r647861', web:null, maps:'https://www.google.com/maps/search/?api=1&query=Auberge%20de%20Saint-R%C3%A9my%20Saint-R%C3%A9my-de-Provence' },
+      { name:'Une Table, au Sud', city:'Marsella', loc:'Vieux-Port', note:'Elegante, con vistas al puerto antiguo. ⭐ Gastronómico de referencia.', lat:43.2956, lng:5.3731, thefork:'https://www.thefork.com/restaurant/une-table-au-sud-r831539', web:null, maps:'https://www.google.com/maps/search/?api=1&query=Une%20Table%20au%20Sud%20Marseille' },
+      { name:'Le Petit Nice', city:'Marsella', loc:'Corniche · Junto al mar', note:'🌟🌟🌟 3 estrellas Michelin. La experiencia más ambiciosa del viaje.', lat:43.2818, lng:5.3564, thefork:'https://www.thefork.com/restaurant/le-petit-nice-passedat-gerald-passedat-r9350', web:null, maps:'https://www.google.com/maps/search/?api=1&query=Le%20Petit%20Nice%20Marseille' },
+      { name:'AM par Alexandre Mazzia', city:'Marsella', loc:'Marsella · Creativa', note:'🌟🌟🌟 3 estrellas Michelin. Alta cocina de vanguardia.', lat:43.2995, lng:5.3773, thefork:'https://www.thefork.com/restaurant/am-par-alexandre-mazzia-r829913', web:null, maps:'https://www.google.com/maps/search/?api=1&query=AM%20par%20Alexandre%20Mazzia%20Marseille' },
+      { name:'Ollā', city:'Marsella', loc:'Centro · Solo mediodía', note:'Café-restaurante de cocina actual. Abierto 9h–18h, ideal para almuerzo.', lat:43.2998, lng:5.3757, thefork:null, web:'https://marseilleolla.fr/en/', maps:'https://www.google.com/maps/search/?api=1&query=Oll%C4%81%20Marseille' },
+    ];
+
+    // Layer groups por categoría
+    const layerGroups = {};
+    Object.keys(colors).forEach(cat => { layerGroups[cat] = L.layerGroup(); });
+
     const markers = [];
-    function markerIcon(color) {
+    function markerIcon(color, size) {
+      const s = size || 20;
       return L.divIcon({
         className: '',
-        html: `<div style="width:20px;height:20px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 8px 18px rgba(0,0,0,.18);"></div>`,
-        iconSize: [20,20],
-        iconAnchor: [10,10]
+        html: `<div style="width:${s}px;height:${s}px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 8px 18px rgba(0,0,0,.18);"></div>`,
+        iconSize: [s,s],
+        iconAnchor: [s/2,s/2]
       });
     }
 
     activities.forEach(a => {
       const m = L.marker([a.lat, a.lng], { icon: markerIcon(colors[a.category] || '#5d2ea6') })
-        .addTo(map)
         .bindPopup(`<strong>${a.name}</strong><br>${a.city}<br>${a.category}<br>${a.note}`);
+      if (layerGroups[a.category]) layerGroups[a.category].addLayer(m);
       markers.push(m);
     });
+
+    restaurants.forEach(r => {
+      const m = L.marker([r.lat, r.lng], { icon: markerIcon(colors['Restaurante'], 22) })
+        .bindPopup(`<strong>${r.name}</strong><br><small>${r.city} · Restaurante</small><br>${r.note}`);
+      layerGroups['Restaurante'].addLayer(m);
+    });
+
+    // Añadir todos los grupos al mapa inicialmente
+    Object.values(layerGroups).forEach(lg => lg.addTo(map));
 
     function matches(a) {
       const d = selectedDate === 'all' || a.date === selectedDate;
@@ -1445,6 +1496,8 @@
       const a = activities[idx];
       if (!a) return;
       document.getElementById('mapa').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Make sure the right layer is visible
+      Object.values(layerGroups).forEach(lg => lg.addTo(map));
       setTimeout(() => {
         map.setView([a.lat, a.lng], 12, { animate: true });
         markers.forEach(m => {
@@ -1453,6 +1506,112 @@
         });
       }, 400);
     }
+
+    // ── MAP EXPLORER ────────────────────────────────────────────
+    const mapCatDefs = [
+      { cat:'all',           emoji:'🗺️', label:'Todos',        color:'#5d2ea6' },
+      { cat:'Pueblo',        emoji:'🏘️', label:'Pueblos',      color:colors['Pueblo'] },
+      { cat:'Naturaleza',    emoji:'🌿', label:'Naturaleza',   color:colors['Naturaleza'] },
+      { cat:'Cultura',       emoji:'🏛️', label:'Cultura',      color:colors['Cultura'] },
+      { cat:'Mercado',       emoji:'🛒', label:'Mercados',     color:colors['Mercado'] },
+      { cat:'Parada urbana', emoji:'🏙️', label:'Urbano',       color:colors['Parada urbana'] },
+      { cat:'Noche',         emoji:'🌙', label:'Noche',        color:colors['Noche'] },
+      { cat:'Restaurante',   emoji:'🍽️', label:'Restaurantes', color:colors['Restaurante'] },
+    ];
+
+    const mapFilterBar = document.getElementById('mapFilterBar');
+    const mapGuideGrid = document.getElementById('mapGuideGrid');
+    const mapGuideTitle = document.getElementById('mapGuideTitle');
+
+    mapCatDefs.forEach(def => {
+      const btn = document.createElement('button');
+      btn.className = 'map-cat-btn' + (def.cat === 'all' ? ' active' : '');
+      if (def.cat === 'all') {
+        btn.style.cssText = `background:${def.color};color:#fff;border-color:transparent;`;
+      }
+      btn.innerHTML = `${def.emoji}&nbsp;${def.label}`;
+      btn.onclick = () => {
+        mapFilterBar.querySelectorAll('.map-cat-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = '';
+          b.style.color = '';
+          b.style.borderColor = '';
+        });
+        btn.classList.add('active');
+        btn.style.background = def.color;
+        btn.style.color = '#fff';
+        btn.style.borderColor = 'transparent';
+
+        // Mostrar/ocultar layer groups
+        Object.entries(layerGroups).forEach(([c, group]) => {
+          if (def.cat === 'all' || c === def.cat) { group.addTo(map); }
+          else { map.removeLayer(group); }
+        });
+
+        // Volar a los bounds de la categoría
+        if (def.cat !== 'all') {
+          const lays = [];
+          layerGroups[def.cat].eachLayer(l => lays.push(l));
+          if (lays.length) {
+            map.flyToBounds(L.featureGroup(lays).getBounds(), { padding:[50,50], maxZoom:13, duration:0.7 });
+          }
+        } else {
+          map.flyTo([43.6, 5.3], 8.3, { duration:0.7 });
+        }
+
+        renderMapGuide(def.cat);
+      };
+      mapFilterBar.appendChild(btn);
+    });
+
+    function renderMapGuide(cat) {
+      const def = mapCatDefs.find(d => d.cat === cat);
+      mapGuideTitle.textContent = cat === 'all'
+        ? 'Todos los puntos del viaje · ' + (activities.length + restaurants.length) + ' lugares'
+        : def.emoji + ' ' + def.label;
+
+      let html = '';
+      const isRest = cat === 'Restaurante';
+      const showActs = cat === 'all' || !isRest;
+      const showRests = cat === 'all' || isRest;
+
+      if (showActs) {
+        const list = cat === 'all' ? activities : activities.filter(a => a.category === cat);
+        list.forEach(a => {
+          const c = colors[a.category] || '#5d2ea6';
+          const mapsUrl = 'https://maps.google.com/?q=' + encodeURIComponent(a.name + ' ' + a.city);
+          html += `<div class="map-guide-card">
+            <div class="map-guide-card-top">
+              <div class="map-guide-dot" style="background:${c}"></div>
+              <div><h5>${a.name}</h5><span class="map-guide-loc">${a.city} · ${a.category}</span></div>
+            </div>
+            <p>${a.note}</p>
+            <div class="map-guide-links"><a class="map-guide-link" href="${mapsUrl}" target="_blank" rel="noopener">Maps →</a></div>
+          </div>`;
+        });
+      }
+
+      if (showRests) {
+        restaurants.forEach(r => {
+          const links = [];
+          if (r.thefork) links.push(`<a class="map-guide-link" href="${r.thefork}" target="_blank" rel="noopener">TheFork →</a>`);
+          if (r.web) links.push(`<a class="map-guide-link" href="${r.web}" target="_blank" rel="noopener">Web →</a>`);
+          links.push(`<a class="map-guide-link" href="${r.maps}" target="_blank" rel="noopener">Maps →</a>`);
+          html += `<div class="map-guide-card">
+            <div class="map-guide-card-top">
+              <div class="map-guide-dot" style="background:${colors['Restaurante']}"></div>
+              <div><h5>${r.name}</h5><span class="map-guide-loc">${r.city} · ${r.loc}</span></div>
+            </div>
+            <p>${r.note}</p>
+            <div class="map-guide-links">${links.join('')}</div>
+          </div>`;
+        });
+      }
+
+      mapGuideGrid.innerHTML = html || '<p style="color:var(--muted);font-size:13px;grid-column:1/-1;">No hay lugares en esta categoría.</p>';
+    }
+
+    renderMapGuide('all');
 
     function openDetail(idx) {
       const a = activities[idx];
